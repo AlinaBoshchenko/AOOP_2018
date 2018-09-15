@@ -15,8 +15,8 @@
       <file leaf-file-name="IntSet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="535">
-              <caret line="139" column="41" selection-start-line="139" selection-start-column="41" selection-end-line="139" selection-end-column="41" />
+            <state relative-caret-position="287">
+              <caret line="73" column="39" selection-start-line="73" selection-start-column="39" selection-end-line="73" selection-end-column="39" />
               <folding>
                 <element signature="e#2189#2190#0" expanded="true" />
                 <element signature="e#2260#2261#0" expanded="true" />
@@ -34,8 +34,8 @@
       <file leaf-file-name="IntSetTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="86" column="51" selection-start-line="86" selection-start-column="51" selection-end-line="86" selection-end-column="51" />
+            <state relative-caret-position="314">
+              <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -151,7 +151,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.IntSetTest.testToString">
+  <component name="RunManager" selected="JUnit.IntSetTest.testRemove">
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
@@ -317,8 +317,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.IntSetTest.testToString" />
         <item itemvalue="JUnit.IntSetTest.testRemove" />
+        <item itemvalue="JUnit.IntSetTest.testToString" />
         <item itemvalue="JUnit.IntSetTest.testAdd" />
         <item itemvalue="JUnit.IntSetTest.testHas" />
         <item itemvalue="JUnit.IntSetTest.testIsEmpty" />
@@ -339,34 +339,34 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="IntSetTest_testGetCapacity - 2018.09.15 at 17h 20m 38s.xml">
-      <configuration name="IntSetTest.testGetCapacity" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 17h 58m 25s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testGetCapacity - 2018.09.15 at 17h 26m 53s.xml">
-      <configuration name="IntSetTest.testGetCapacity" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 02m 58s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testGetCount - 2018.09.15 at 17h 40m 47s.xml">
-      <configuration name="IntSetTest.testGetCount" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 03m 29s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testGetCapacity - 2018.09.15 at 17h 41m 01s.xml">
-      <configuration name="IntSetTest.testGetCapacity" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 03m 56s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testIsEmpty - 2018.09.15 at 17h 41m 10s.xml">
-      <configuration name="IntSetTest.testIsEmpty" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 04m 26s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testHas - 2018.09.15 at 17h 41m 14s.xml">
-      <configuration name="IntSetTest.testHas" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 04m 48s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testAdd - 2018.09.15 at 17h 41m 18s.xml">
-      <configuration name="IntSetTest.testAdd" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 05m 39s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 17h 41m 22s.xml">
-      <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 06m 04s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 17h 44m 11s.xml">
-      <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 07m 31s.xml">
+      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 17h 44m 42s.xml">
+    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 18h 07m 52s.xml">
       <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
     </history-entry>
   </component>
@@ -383,8 +383,8 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32905984" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32905984" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25302014" />
@@ -404,6 +404,11 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <option name="time" value="2" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
@@ -435,8 +440,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="535">
-          <caret line="139" column="41" selection-start-line="139" selection-start-column="41" selection-end-line="139" selection-end-column="41" />
+        <state relative-caret-position="287">
+          <caret line="73" column="39" selection-start-line="73" selection-start-column="39" selection-end-line="73" selection-end-column="39" />
           <folding>
             <element signature="e#2189#2190#0" expanded="true" />
             <element signature="e#2260#2261#0" expanded="true" />
@@ -452,8 +457,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="86" column="51" selection-start-line="86" selection-start-column="51" selection-end-line="86" selection-end-column="51" />
+        <state relative-caret-position="314">
+          <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class IntSet {
 	private ArrayList<Integer> mySet;
 	private int capacity;
-	private String toString;
+	private String toString = "{";
 
 	/**
 	 * Creates a new set with 0 elements.
@@ -70,7 +70,8 @@ public class IntSet {
 	 */
 	public void remove(int value) {
 		if (mySet.isEmpty()) throw new IllegalArgumentException("list is empty");
-		mySet.remove(value);
+		if (!mySet.contains(value)) throw new IllegalArgumentException("list doesn't contain element");
+		mySet.remove(Integer.valueOf(value));
 	}
 
 	/**
@@ -133,11 +134,10 @@ public class IntSet {
 	 */
 	public String toString() {
 	    int i;
-	    toString = "{";
-		for (i = 1; i < mySet.size() - 1; i++) {
-            toString += mySet.get(i) + ", ";
+		for (i = 0; i < mySet.size(); i++) {
+            if(i == mySet.size()-1) toString += mySet.get(i) + "}";
+            else toString += mySet.get(i) + ", ";
         }
-        toString += mySet.get(i+1) + "}";
 		return toString;
 	}
 

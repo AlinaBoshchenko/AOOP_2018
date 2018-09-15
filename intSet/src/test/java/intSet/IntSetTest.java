@@ -1,6 +1,5 @@
 package intSet;
 
-import intSet.IntSet;
 import org.junit.Test;
 
 import static junit.framework.TestCase.fail;
@@ -78,7 +77,7 @@ public class IntSetTest {
 
     @Test
     public void testToString() {
-        set = new IntSet(10);
+        set = new IntSet(5);
         set.add(1);
         set.add(5);
         set.add(8);

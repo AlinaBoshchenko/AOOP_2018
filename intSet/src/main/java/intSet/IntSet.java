@@ -1,3 +1,7 @@
+package intSet;
+
+import java.util.ArrayList;
+
 /**
  * Representation of a finite set of integers.
  * 
@@ -5,8 +9,10 @@
  * @invariant getCount() <= getCapacity()
  */
 public class IntSet {
+	private ArrayList<Integer> mySet;
+	private int capacity;
+	private String toString;
 
-	
 	/**
 	 * Creates a new set with 0 elements.
 	 * 
@@ -17,7 +23,8 @@ public class IntSet {
 	 * @post getCapacity() == capacity
 	 */
 	public IntSet(int capacity) {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+	    mySet = new ArrayList<>();
+	    this.capacity = capacity;
 	}
 
 	/**
@@ -26,7 +33,8 @@ public class IntSet {
 	 * @return getCount() == 0
 	 */
 	public boolean isEmpty() {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		if (mySet.isEmpty()) return true;
+		else return false;
 	}
 
 	/**
@@ -35,7 +43,8 @@ public class IntSet {
 	 * @return exists int v in getArray() such that v == value
 	 */
 	public boolean has(int value) {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		if (mySet.contains(value)) return true;
+		else return false;
 	}
 
 	/**
@@ -47,7 +56,9 @@ public class IntSet {
 	 * @post this@pre.has(value) implies (getCount() == this@pre.getCount())
 	 */
 	public void add(int value) {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		if (mySet.size() == capacity) throw new IllegalArgumentException("list capacity exceeded");
+		if (mySet.contains(value)) throw new IllegalArgumentException("value is already exists");
+		mySet.add(value);
 	}
 
 	/**
@@ -58,7 +69,8 @@ public class IntSet {
 	 * @post !this@pre.has(value) implies (getCount() == this@pre.getCount())
 	 */
 	public void remove(int value) {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		if (mySet.isEmpty()) throw new IllegalArgumentException("list is empty");
+		mySet.remove(value);
 	}
 
 	/**
@@ -104,14 +116,14 @@ public class IntSet {
 	 * Returns the number of elements in the set.
 	 */
 	public int getCount() {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		return mySet.size();
 	}
 
 	/**
 	 * Returns the maximal number of elements in the set.
 	 */
 	public int getCapacity() {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+		return capacity;
 	}
 
 	/**
@@ -120,7 +132,13 @@ public class IntSet {
 	 * y, z}.
 	 */
 	public String toString() {
-		throw new UnsupportedOperationException ("not yet implemented") ;
+	    int i;
+	    toString = "{";
+		for (i = 1; i < mySet.size() - 1; i++) {
+            toString += mySet.get(i) + ", ";
+        }
+        toString += mySet.get(i+1) + "}";
+		return toString;
 	}
 
 }

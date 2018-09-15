@@ -2,21 +2,27 @@ package intSet;
 
 import org.junit.Test;
 
+import java.util.Set;
+
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.*;
 
 public class IntSetTest {
     private IntSet set;
 
+    public void setUp(int capacity){
+        set = new IntSet(capacity);
+    }
+
     @Test
     public void testIsEmpty() {
-        set = new IntSet(0);
+        setUp(0);
         assertEquals(set.isEmpty(),true);
     }
 
     @Test
     public void testHas() {
-        set = new IntSet(5);
+        setUp(4);
         set.add(1);
         set.add(5);
         set.add(7);
@@ -28,7 +34,7 @@ public class IntSetTest {
 
     @Test
     public void testAdd() {
-        set = new IntSet(10);
+        setUp(2);
         set.add(2);
         assertEquals(set.has(1),false);
         set.add(1);
@@ -38,12 +44,14 @@ public class IntSetTest {
 
     @Test
     public void testRemove() {
-        set = new IntSet(10);
+        setUp(2);
         set.add(2);
         set.add(3);
         assertEquals(set.has(3),true);
         set.remove(3);
         assertEquals(set.has(3),false);
+        set.remove(2);
+        assertEquals(set.has(2),false);
     }
 
     @Test
@@ -63,7 +71,7 @@ public class IntSetTest {
 
     @Test
     public void testGetCount() {
-        set = new IntSet(10);
+        setUp(2);
         set.add(1);
         set.add(2);
         assertEquals(set.getCount(),2);
@@ -71,13 +79,15 @@ public class IntSetTest {
 
     @Test
     public void testGetCapacity() {
-        set = new IntSet(25);
+        setUp(25);
         assertEquals(set.getCapacity(),25);
+        setUp(0);
+        assertEquals(set.getCapacity(),0);
     }
 
     @Test
     public void testToString() {
-        set = new IntSet(5);
+        setUp(5);
         set.add(1);
         set.add(5);
         set.add(8);

@@ -20,8 +20,10 @@ public class IntSetTest {
 
     @Test
     public void testIsEmpty() {
-        setUp(0);
+        setUp(1);
         assertEquals(set.isEmpty(),true);
+        set.add(2);
+        assertEquals(set.isEmpty(),false);
     }
 
     @Test
@@ -30,6 +32,7 @@ public class IntSetTest {
         set.add(1);
         set.add(5);
         set.add(7);
+        assertEquals(set.has(13),false);
         set.add(13);
         assertEquals(set.has(1),true);
         assertEquals(set.has(13),true);
@@ -179,13 +182,13 @@ public class IntSetTest {
 
     @Test
     public void testGetElements() {
-        ArrayList<Integer> list = new ArrayList<>();
         setUp(4);
         set.add(1);
         set.add(6);
         set.add(2);
         set.add(7);
 
+        ArrayList<Integer> list = new ArrayList<>();
         list.add(1);
         list.add(6);
         list.add(2);

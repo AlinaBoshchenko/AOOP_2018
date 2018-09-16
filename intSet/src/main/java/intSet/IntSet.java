@@ -112,7 +112,12 @@ public class IntSet {
 	 * @post !this@pre.has(value) implies (getCount() == this@pre.getCount())
 	 */
 	public void remove(int value) {
-		elements.remove(new Integer(value));
+		if(getCount() <= 0){
+		    throw new RuntimeException("There are no elements in the list");
+        }
+        if(has(value)){
+            elements.remove(new Integer(value));
+        }
 	}
 
 	/**
@@ -235,7 +240,6 @@ public class IntSet {
 	public int getCount() {
 		return elements.size();
 	}
-
 
 	/**
 	 * Returns the maximal number of elements in the set.

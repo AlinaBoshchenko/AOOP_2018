@@ -12,32 +12,43 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="IntSet.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="IntSet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="87" column="73" lean-forward="true" selection-start-line="87" selection-start-column="73" selection-end-line="87" selection-end-column="73" />
+            <state relative-caret-position="204">
+              <caret line="225" column="39" selection-start-line="225" selection-start-column="39" selection-end-line="225" selection-end-column="39" />
               <folding>
-                <element signature="e#2336#2337#0" expanded="true" />
-                <element signature="e#2382#2383#0" expanded="true" />
-                <element signature="e#2631#2632#0" expanded="true" />
-                <element signature="e#2702#2703#0" expanded="true" />
-                <element signature="e#3104#3105#0" expanded="true" />
-                <element signature="e#3122#3123#0" expanded="true" />
-                <element signature="e#3224#3225#0" expanded="true" />
-                <element signature="e#3242#3243#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1842#1843#0" expanded="true" />
+                <element signature="e#1881#1882#0" expanded="true" />
+                <element signature="e#1987#1988#0" expanded="true" />
+                <element signature="e#2018#2019#0" expanded="true" />
+                <element signature="e#2165#2166#0" expanded="true" />
+                <element signature="e#2203#2204#0" expanded="true" />
+                <element signature="e#5735#5736#0" expanded="true" />
+                <element signature="e#5790#5791#0" expanded="true" />
+                <element signature="e#6261#6262#0" expanded="true" />
+                <element signature="e#6283#6284#0" expanded="true" />
+                <element signature="e#6365#6366#0" expanded="true" />
+                <element signature="e#6394#6395#0" expanded="true" />
+                <element signature="e#6488#6489#0" expanded="true" />
+                <element signature="e#6510#6511#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="IntSetTest.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="IntSetTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-544">
-              <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
+            <state relative-caret-position="272">
+              <caret line="175" column="51" lean-forward="true" selection-start-line="175" selection-start-column="51" selection-end-line="175" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#230#231#0" expanded="true" />
+                <element signature="e#272#273#0" expanded="true" />
+                <element signature="e#323#324#0" expanded="true" />
+                <element signature="e#360#361#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -56,8 +67,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/intSet/IntSet.java" />
+        <option value="$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java" />
       </list>
     </option>
   </component>
@@ -71,8 +82,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -131,7 +142,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -151,11 +162,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.IntSetTest.testRemove">
+  <component name="RunManager" selected="JUnit.IntSetTest.testGetArray">
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
-    <configuration name="IntSetTest.testAdd" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="IntSetTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="intSet" />
       <extension name="coverage">
         <pattern>
@@ -167,7 +178,30 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="intSet" />
       <option name="MAIN_CLASS_NAME" value="intSet.IntSetTest" />
-      <option name="METHOD_NAME" value="testAdd" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="IntSetTest.testGetArray" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="intSet" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="intSet.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="intSet" />
+      <option name="MAIN_CLASS_NAME" value="intSet.IntSetTest" />
+      <option name="METHOD_NAME" value="testGetArray" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -178,7 +212,7 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="IntSetTest.testGetCapacity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="IntSetTest.testGetCount" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="intSet" />
       <extension name="coverage">
         <pattern>
@@ -190,7 +224,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="intSet" />
       <option name="MAIN_CLASS_NAME" value="intSet.IntSetTest" />
-      <option name="METHOD_NAME" value="testGetCapacity" />
+      <option name="METHOD_NAME" value="testGetCount" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -201,7 +235,7 @@
       </option>
       <patterns />
     </configuration>
-    <configuration name="IntSetTest.testHas" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="IntSetTest.testGetElements" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="intSet" />
       <extension name="coverage">
         <pattern>
@@ -213,30 +247,7 @@
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="intSet" />
       <option name="MAIN_CLASS_NAME" value="intSet.IntSetTest" />
-      <option name="METHOD_NAME" value="testHas" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns />
-    </configuration>
-    <configuration name="IntSetTest.testRemove" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="intSet" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="intSet.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="intSet" />
-      <option name="MAIN_CLASS_NAME" value="intSet.IntSetTest" />
-      <option name="METHOD_NAME" value="testRemove" />
+      <option name="METHOD_NAME" value="testGetElements" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
@@ -309,19 +320,19 @@
       <listeners />
     </configuration>
     <list>
-      <item itemvalue="JUnit.IntSetTest.testHas" />
-      <item itemvalue="JUnit.IntSetTest.testAdd" />
-      <item itemvalue="JUnit.IntSetTest.testRemove" />
+      <item itemvalue="JUnit.IntSetTest.testGetCount" />
       <item itemvalue="JUnit.IntSetTest.testToString" />
-      <item itemvalue="JUnit.IntSetTest.testGetCapacity" />
+      <item itemvalue="JUnit.IntSetTest.testGetArray" />
+      <item itemvalue="JUnit.IntSetTest.testGetElements" />
+      <item itemvalue="JUnit.IntSetTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.IntSetTest.testRemove" />
-        <item itemvalue="JUnit.IntSetTest.testAdd" />
-        <item itemvalue="JUnit.IntSetTest.testGetCapacity" />
+        <item itemvalue="JUnit.IntSetTest.testGetArray" />
+        <item itemvalue="JUnit.IntSetTest" />
+        <item itemvalue="JUnit.IntSetTest.testGetElements" />
         <item itemvalue="JUnit.IntSetTest.testToString" />
-        <item itemvalue="JUnit.IntSetTest.testHas" />
+        <item itemvalue="JUnit.IntSetTest.testGetCount" />
       </list>
     </recent_temporary>
   </component>
@@ -339,35 +350,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 03m 29s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetArray - 2018.09.16 at 17h 13m 53s.xml">
+      <configuration name="IntSetTest.testGetArray" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 03m 56s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetArray - 2018.09.16 at 17h 14m 11s.xml">
+      <configuration name="IntSetTest.testGetArray" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 04m 26s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetElements - 2018.09.16 at 17h 15m 02s.xml">
+      <configuration name="IntSetTest.testGetElements" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 04m 48s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetElements - 2018.09.16 at 17h 15m 29s.xml">
+      <configuration name="IntSetTest.testGetElements" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 05m 39s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetArray - 2018.09.16 at 17h 16m 31s.xml">
+      <configuration name="IntSetTest.testGetArray" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 06m 04s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetElements - 2018.09.16 at 17h 17m 42s.xml">
+      <configuration name="IntSetTest.testGetElements" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testToString - 2018.09.15 at 18h 07m 31s.xml">
-      <configuration name="IntSetTest.testToString" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetElements - 2018.09.16 at 17h 18m 56s.xml">
+      <configuration name="IntSetTest.testGetElements" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 18h 07m 52s.xml">
-      <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
+    <history-entry file="IntSetTest - 2018.09.16 at 17h 21m 10s.xml">
+      <configuration name="IntSetTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 18h 12m 44s.xml">
-      <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
+    <history-entry file="IntSetTest - 2018.09.16 at 17h 21m 26s.xml">
+      <configuration name="IntSetTest" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="IntSetTest_testRemove - 2018.09.15 at 18h 13m 36s.xml">
-      <configuration name="IntSetTest.testRemove" configurationId="JUnit" />
+    <history-entry file="IntSetTest_testGetArray - 2018.09.16 at 17h 23m 20s.xml">
+      <configuration name="IntSetTest.testGetArray" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -383,11 +394,11 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32905984" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32905984" />
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32905984" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25302014" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25637585" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
@@ -407,23 +418,68 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1479">
+          <caret line="87" column="73" lean-forward="true" selection-start-line="87" selection-start-column="73" selection-end-line="87" selection-end-column="73" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1842#1843#0" expanded="true" />
+            <element signature="e#1881#1882#0" expanded="true" />
+            <element signature="e#1987#1988#0" expanded="true" />
+            <element signature="e#2018#2019#0" expanded="true" />
+            <element signature="e#2165#2166#0" expanded="true" />
+            <element signature="e#2203#2204#0" expanded="true" />
+            <element signature="e#5735#5736#0" expanded="true" />
+            <element signature="e#5790#5791#0" expanded="true" />
+            <element signature="e#6261#6262#0" expanded="true" />
+            <element signature="e#6283#6284#0" expanded="true" />
+            <element signature="e#6365#6366#0" expanded="true" />
+            <element signature="e#6394#6395#0" expanded="true" />
+            <element signature="e#6488#6489#0" expanded="true" />
+            <element signature="e#6510#6511#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1020">
+          <caret line="73" column="15" selection-start-line="73" selection-start-column="15" selection-end-line="73" selection-end-column="15" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#230#231#0" expanded="true" />
+            <element signature="e#272#273#0" expanded="true" />
+            <element signature="e#323#324#0" expanded="true" />
+            <element signature="e#360#361#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2006">
           <caret line="118" column="7" lean-forward="true" selection-start-line="118" selection-start-column="7" selection-end-line="118" selection-end-column="7" />
           <folding>
-            <element signature="e#2336#2337#0" expanded="true" />
-            <element signature="e#2382#2383#0" expanded="true" />
-            <element signature="e#2631#2632#0" expanded="true" />
-            <element signature="e#2702#2703#0" expanded="true" />
-            <element signature="e#3104#3105#0" expanded="true" />
-            <element signature="e#3122#3123#0" expanded="true" />
-            <element signature="e#3224#3225#0" expanded="true" />
-            <element signature="e#3242#3243#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1842#1843#0" expanded="true" />
+            <element signature="e#1881#1882#0" expanded="true" />
+            <element signature="e#1987#1988#0" expanded="true" />
+            <element signature="e#2018#2019#0" expanded="true" />
+            <element signature="e#2165#2166#0" expanded="true" />
+            <element signature="e#2203#2204#0" expanded="true" />
+            <element signature="e#5735#5736#0" expanded="true" />
+            <element signature="e#5790#5791#0" expanded="true" />
+            <element signature="e#6261#6262#0" expanded="true" />
+            <element signature="e#6283#6284#0" expanded="true" />
+            <element signature="e#6365#6366#0" expanded="true" />
+            <element signature="e#6394#6395#0" expanded="true" />
+            <element signature="e#6488#6489#0" expanded="true" />
+            <element signature="e#6510#6511#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -434,33 +490,48 @@
           <caret line="53" column="17" lean-forward="true" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-544">
-          <caret line="1" lean-forward="true" selection-start-line="1" selection-end-line="1" />
-          <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#230#231#0" expanded="true" />
+            <element signature="e#272#273#0" expanded="true" />
+            <element signature="e#323#324#0" expanded="true" />
+            <element signature="e#360#361#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/intSet/IntSet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="87" column="73" lean-forward="true" selection-start-line="87" selection-start-column="73" selection-end-line="87" selection-end-column="73" />
+        <state relative-caret-position="204">
+          <caret line="225" column="39" selection-start-line="225" selection-start-column="39" selection-end-line="225" selection-end-column="39" />
           <folding>
-            <element signature="e#2336#2337#0" expanded="true" />
-            <element signature="e#2382#2383#0" expanded="true" />
-            <element signature="e#2631#2632#0" expanded="true" />
-            <element signature="e#2702#2703#0" expanded="true" />
-            <element signature="e#3104#3105#0" expanded="true" />
-            <element signature="e#3122#3123#0" expanded="true" />
-            <element signature="e#3224#3225#0" expanded="true" />
-            <element signature="e#3242#3243#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1842#1843#0" expanded="true" />
+            <element signature="e#1881#1882#0" expanded="true" />
+            <element signature="e#1987#1988#0" expanded="true" />
+            <element signature="e#2018#2019#0" expanded="true" />
+            <element signature="e#2165#2166#0" expanded="true" />
+            <element signature="e#2203#2204#0" expanded="true" />
+            <element signature="e#5735#5736#0" expanded="true" />
+            <element signature="e#5790#5791#0" expanded="true" />
+            <element signature="e#6261#6262#0" expanded="true" />
+            <element signature="e#6283#6284#0" expanded="true" />
+            <element signature="e#6365#6366#0" expanded="true" />
+            <element signature="e#6394#6395#0" expanded="true" />
+            <element signature="e#6488#6489#0" expanded="true" />
+            <element signature="e#6510#6511#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/intSet/IntSetTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="175" column="51" lean-forward="true" selection-start-line="175" selection-start-column="51" selection-end-line="175" selection-end-column="51" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#230#231#0" expanded="true" />
+            <element signature="e#272#273#0" expanded="true" />
+            <element signature="e#323#324#0" expanded="true" />
+            <element signature="e#360#361#0" expanded="true" />
           </folding>
         </state>
       </provider>

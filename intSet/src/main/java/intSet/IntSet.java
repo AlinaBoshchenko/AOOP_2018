@@ -46,7 +46,7 @@ public class IntSet {
 			throw new IllegalArgumentException("Capacity should be positive.");
 		}
 		if(other == null) {
-			throw new IllegalArgumentException("The other set should not be null.");
+			throw new NullPointerException("The other set should not be null.");
 		}
 		if(other.getCount() > capacity) {
 			throw new RuntimeException("The source set should have a smaller cardinality" +
@@ -66,7 +66,11 @@ public class IntSet {
 	 * @post getCapacity() == capacity
 	 */
 	public IntSet(IntSet other) {
-		this(other, other.getCapacity());
+		if(other == null) {
+			throw new NullPointerException("The other set should not be null.");
+		}
+		this.capacity = other.getCapacity();
+		elements = new ArrayList<>(other.getElements());
 	}
 
 	/**
@@ -96,10 +100,10 @@ public class IntSet {
 	 * @post this@pre.has(value) implies (getCount() == this@pre.getCount())
 	 */
 	public void add(int value) {
-		if(getCount() >= getCapacity()) {
-			throw new RuntimeException("Capacity of the set exceeded");
-		}
 		if(!has(value)) {
+			if(getCount() >= getCapacity()) {
+				throw new RuntimeException("Capacity of the set exceeded");
+			}
 			elements.add(value);
 		}
 	}
@@ -125,7 +129,7 @@ public class IntSet {
 	 */
 	private static int maxCapacity(IntSet first, IntSet second) {
 		if(first == null || second == null) {
-			throw new IllegalArgumentException("Sets should not be null");
+			throw new NullPointerException("Sets should not be null");
 		}
 		return (first.getCapacity() > second.getCapacity()) ? first.getCapacity() : second.getCapacity();
 	}
@@ -143,7 +147,7 @@ public class IntSet {
 	 */
 	public IntSet intersect(IntSet other) {
 		if(other == null) {
-			throw new IllegalArgumentException("The other set should not be null");
+			throw new NullPointerException("The other set should not be null");
 		}
 		IntSet intersectSet = new IntSet(maxCapacity(this, other));
 		for(Integer element : elements) {
@@ -167,7 +171,7 @@ public class IntSet {
 	 */
 	public IntSet union(IntSet other) {
 		if(other == null) {
-			throw new IllegalArgumentException("The other set should not be null");
+			throw new NullPointerException("The other set should not be null");
 		}
 		IntSet unionSet = new IntSet(getCapacity() + other.getCapacity());
 		for(Integer element : elements) {
@@ -190,7 +194,7 @@ public class IntSet {
 	 */
 	public IntSet difference(IntSet other) {
 		if(other == null) {
-			throw new IllegalArgumentException("The other set should not be null");
+			throw new NullPointerException("The other set should not be null");
 		}
 		IntSet differenceSet = new IntSet(this);
 		for(Integer element : other.getElements()) {
@@ -242,6 +246,14 @@ public class IntSet {
 	}
 
 	/**
+	 * Sets the capacity of this set to the specified one.
+	 */
+	public void setCapacity(int capacity) {
+		elements.ensureCapacity(capacity);
+		this.capacity = capacity;
+	}
+
+	/**
 	 * Returns the maximal number of elements in the set.
 	 */
 	public int getCapacity() {
@@ -253,6 +265,7 @@ public class IntSet {
 	 * as {}, a singleton set as {x}, a set with more than one element like {x,
 	 * y, z}.
 	 */
+	@Override
 	public String toString() {
 		StringBuilder buffer = new StringBuilder("{");
 		Iterator<Integer> iterator = elements.iterator();
@@ -263,6 +276,39 @@ public class IntSet {
 			buffer.append(", ").append(iterator.next());
 		}
 		return buffer.append('}').toString();
+	}
+
+	/**
+	 * Checks if this integer set is equal to the other one
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if(other == null || other.getClass() != getClass()) {
+			return false;
+		}
+		IntSet intSet = (IntSet) other;
+		if(intSet.getCapacity() != getCapacity()) {
+			return false;
+		}
+		for(Integer element : elements) {
+			if(!intSet.has(element)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Returns the hashCode of the given IntSet
+	 */
+	@Override
+	public int hashCode() {
+		int result = 42;
+		result *= 24 * result +  getCapacity();
+		for(Integer element : elements) {
+			result *= 24 * result +  element.hashCode();
+		}
+		return result;
 	}
 
 }

@@ -1,5 +1,7 @@
 package intSet;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -18,6 +20,34 @@ public class IntSetTest {
         tempSet = new IntSet(capacity);
     }
 
+
+    //Uncomment if all test methods setUp an IntSet of capacity 5
+    /*
+    @Before
+    public void setUp() {
+        set = new IntSet(5);
+    }*/
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFirstConstructor() {
+        new IntSet(-1); //create a set with invalid capacity
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSecondConstructor() {
+        setUpTemp(3);
+        tempSet.add(1);
+        tempSet.add(2);
+        tempSet.add(3);
+        new IntSet(tempSet, 2);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testThirdConstructor() {
+        IntSet nullSet = null;
+        new IntSet(nullSet);
+    }
+
     @Test
     public void testIsEmpty() {
         setUp(1);
@@ -32,8 +62,12 @@ public class IntSetTest {
         set.add(1);
         set.add(5);
         set.add(7);
+        set.add(7);
+        assertEquals(set.has(7),true);
+        set.remove(7);
         assertEquals(set.has(13),false);
         set.add(13);
+        assertEquals(set.has(7),false);
         assertEquals(set.has(1),true);
         assertEquals(set.has(13),true);
         assertEquals(set.has(4),false);
@@ -44,8 +78,11 @@ public class IntSetTest {
         setUp(2);
         set.add(2);
         assertEquals(set.has(1),false);
+        assertEquals(set.has(2), true);
         set.add(1);
         assertEquals(set.has(1),true);
+        set.add(2); //should not throw runtime exception
+        set.add(1); //should not throw runtime exception
 
     }
 
@@ -54,11 +91,20 @@ public class IntSetTest {
         setUp(2);
         set.add(2);
         set.add(3);
-        assertEquals(set.has(3),true);
+        assertTrue(set.has(3));
         set.remove(3);
-        assertEquals(set.has(3),false);
+        set.remove(3); //this should not throw any exception
+        assertFalse(set.isEmpty());
+        assertFalse(set.has(3));
         set.remove(2);
-        assertEquals(set.has(2),false);
+        assertFalse(set.has(2));
+        assertTrue(set.isEmpty());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testRemoveEmptySet() {
+        setUp(0);
+        set.remove(10); //should throw exception
     }
 
     @Test
@@ -162,7 +208,21 @@ public class IntSetTest {
 
         set = set.symmetricDifference(tempSet); //2 full sets
         assertEquals(set.toString(),"{6, 15, 3, 13, 5, 4}");
+
+        setUp(0);
+        setUpTemp(0);
+        assertEquals(set.symmetricDifference(tempSet).toString(), "{}");
     }
+
+
+    @Test(expected = NullPointerException.class)
+    public void testSymmetricDifferenceNull() {
+        IntSet nullSet = null;
+        setUpTemp(2);
+        set.symmetricDifference(nullSet);
+    }
+
+
 
     @Test
     public void testGetArray() {
@@ -174,7 +234,6 @@ public class IntSetTest {
 
         int setArray[] = set.getArray();
         int tempArray[] = {1,6,2,7};
-
         for(int i = 0; i < set.getCount(); i++){
             assertEquals(setArray[i],tempArray[i]);
         }
@@ -224,5 +283,23 @@ public class IntSetTest {
         set.add(4);
         set.add(2);
         assertEquals(set.toString(),"{1, 5, 8, 4, 2}");
+    }
+
+    @Test
+    public void testEquality() {
+        setUp(5);
+        setUpTemp(4);
+        set.add(1);
+        set.add(2);
+        tempSet.add(1);
+        tempSet.add(2);
+        assertNotEquals(set, tempSet); //false because have different capacities
+        tempSet.setCapacity(5);
+        assertEquals(set, tempSet); //now should be true
+        assertEquals(set.hashCode(), tempSet.hashCode()); //the hash codes should also coincide
+        tempSet.remove(1);
+        assertNotEquals(set, tempSet);
+        assertNotEquals(set.hashCode(), tempSet.hashCode());
+
     }
 }

@@ -1,7 +1,9 @@
+import Server.ServerHandler;
 
 public class Main {
 
 	public static void main(String[] args){
-		System.out.println("Hello World!");
+		ServerHandler server = new ServerHandler();
+		server.portSetup();
 	}
 }

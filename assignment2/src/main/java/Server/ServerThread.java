@@ -1,10 +1,9 @@
-package main.java;
+package Server;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ServerThread extends Thread {
 
@@ -114,7 +113,6 @@ public class ServerThread extends Thread {
     private void chatRoomMessages(String msg) throws IOException {
         for (ServerThread thread : serverInteraction.getThreadList()) {
             if (thread.chatRoom.containsKey(getChat())){
-                System.out.println(thread.getUserID());
                 thread.messageUsers(getUserID(),msg);
             }
         }

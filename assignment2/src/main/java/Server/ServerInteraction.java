@@ -4,17 +4,18 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class ServerInteraction extends Thread {
 
     private final int serverPort;
-    private ArrayList<ServerThread> threadList = new ArrayList<>();
+    private Vector<ServerThread> threadList = new Vector<>();
 
     public ServerInteraction(int port) {
         this.serverPort = port;
     }
 
-    public ArrayList<ServerThread> getThreadList () {
+    public Vector<ServerThread> getThreadList () {
         return threadList;
     }
 

@@ -2,139 +2,117 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 
 public class ServerThread extends Thread {
 
-    private String userID = null;
-    private String chat = null;
-    private String msg = null;
+
+    private static final String ADMISSIBLE_NAME_REGEX = "^[a-zA-Z0-9._-]{3,}$";
+    private String clientLogin = null;
     private OutputStream outputStream;
+    private InputStream inputStream;
     private final Socket clientSocket;
     private final ServerInteraction serverInteraction;
-    private HashMap<String, ArrayList<String>> chatRoom = new HashMap<>();
 
     public ServerThread(ServerInteraction serverInteraction, Socket client){
         this.serverInteraction = serverInteraction;
         this.clientSocket = client;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getClientLogin() {
+        return clientLogin;
     }
 
-    public String getChat() {
-        return chat;
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    private boolean isLoggedIn() {
+        return clientLogin != null;
     }
 
     private void clientThread() throws IOException {
-        InputStream inputStream = clientSocket.getInputStream();
-        this.outputStream = clientSocket.getOutputStream();
+        inputStream = clientSocket.getInputStream();
+        outputStream = clientSocket.getOutputStream();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while((line = reader.readLine()) != null) {
 
-        while((msg = reader.readLine()) != null) {
-            if ("quit".equalsIgnoreCase(msg) || msg.contains("logoff".toLowerCase())){
-                logoffHandler();
-                break;
+            ServerMessage serverMessage = new ServerMessage(line);
+            if(!isLoggedIn()) {
+                if(!serverMessage.isCommand() || !serverMessage.getCommand().equals(ServerCommand.LOGIN_COMMAND)) {
+                    sendClientMessage("[SERVER] You need to log in first! (use \"" + ServerCommand.LOGIN_COMMAND + "\" command)\n");
+                    continue;
+                }
+                loginHandler(serverMessage.getArguments());
+                continue;
             }
-            if (msg.contains("login".toLowerCase())){
-                loginHandler(msg,outputStream);
-            } else if (msg.contains("join".toLowerCase())){
-                chatRoomJoin(msg);
-            } else if (msg.contains("leave".toLowerCase())) {
-                chatRoomLeave(msg);
-            }else {
-                chatRoomMessages(": " + msg);
-            }
-        }
-        clientSocket.close();
-    }
+            if(serverMessage.isCommand()) {
+                switch (serverMessage.getCommand()) {
+                    case LOGIN_COMMAND:
+                        sendClientMessage("[SERVER] You are already logged in! To quit use " + ServerCommand.LOGOFF_COMMAND + " command.\n");
+                        break;
+                    case LOGOFF_COMMAND:
+                        logOffHandler();
+                        return;
+                }
 
-    private void loginHandler (String msg, OutputStream outputStream) throws IOException{
-        if (msg.contains("login")){
-            String login = removeCommand(msg,"login");
-
-            this.userID = login;
-
-            outputStream.write((login + " has connected.\n").getBytes());
-
-            String update = userID + " is online.";
-            for(ServerThread thread : serverInteraction.getThreadList()) {
-                if(!userID.equals(thread.getUserID())) {
-                    thread.notifyUsers(update);
+            } else {
+                if(serverMessage.getArguments().contains("[SERVER]")) {
+                    sendClientMessage("[SERVER] You are not allowed to use [SERVER] keyword in your messages.\n");
+                } else {
+                    sendOtherClientsMessage(clientLogin + ": " + serverMessage.getArguments() + "\n");
                 }
             }
         }
-    }
-
-    private void logoffHandler() throws IOException {
-        serverInteraction.removeUser(this);
-        String msg = userID + " is offline.";
-        for(ServerThread thread : serverInteraction.getThreadList()) {
-            if(!userID.equals(thread.getUserID())) {
-                thread.notifyUsers(msg);
-            }
-        }
         clientSocket.close();
     }
 
-    private void chatRoomJoin(String msg) throws IOException {
-        if (msg.contains("join")) {
-            String join = removeCommand(msg,"join");
-            ArrayList<String> list;
-            if(chatRoom.containsKey(join)){
-                list = chatRoom.get(join);
-                list.add(join);
-            } else {
-                list = new ArrayList<String>();
-                list.add(userID);
-                chatRoom.put(join, list);
-            }
-            this.chat = join;
-            chatRoomMessages(" has joined the chat room.");
+    private void loginHandler (String login) throws IOException{
+        if(!login.matches(ADMISSIBLE_NAME_REGEX)) {
+            sendClientMessage("[SERVER] Invalid login name! (inadmissible format or characters)\n");
+            return;
         }
-    }
-
-    private void chatRoomLeave(String msg) throws IOException {
-        if (msg.contains("leave")) {
-            chatRoomMessages(" has left the chat room.");
-            String leave = removeCommand(msg,"leave");
-            if(chatRoom.containsKey(leave)) {
-                chatRoom.values().remove(userID);
-            }
-            if(chatRoom.values().isEmpty()){
-                chatRoom.remove(leave);
+        for(ServerThread client : serverInteraction.getThreadList()) {
+            if(login.equals(client.getClientLogin())) {
+                sendClientMessage("[SERVER] Invalid login name! " + login + " is already taken!\n");
+                return;
             }
         }
+        if(clientLogin == null) {
+            sendClientMessage("[SERVER] You logged in as " + login + ".\n");
+            sendOtherClientsMessage("[SERVER] " + login + " has logged in. Great him!\n");
+        } else {
+            sendClientMessage("[SERVER] You changed your login to: " + login + ".\n");
+            sendOtherClientsMessage("[SERVER] " + clientLogin + " changed his login to " +  login);
+        }
+        clientLogin = login;
+
     }
 
-    private void chatRoomMessages(String msg) throws IOException {
-        for (ServerThread thread : serverInteraction.getThreadList()) {
-            if (thread.chatRoom.containsKey(getChat())){
-                thread.messageUsers(getUserID(),msg);
+    private void logOffHandler() throws IOException {
+        serverInteraction.removeUser(this);
+        sendClientMessage("Bye!\n");
+        clientSocket.close();
+        if(clientLogin != null) {
+            sendOtherClientsMessage("[SERVER] " + clientLogin + " left.\n");
+
+        }
+    }
+
+    private void sendClientMessage(String msg) throws IOException {
+        outputStream.write(msg.getBytes());
+    }
+
+    private void sendOtherClientsMessage(String msg) throws IOException {
+        for(ServerThread client : serverInteraction.getThreadList()) {
+            if(client.getClientLogin() == null || client.equals(this)) {
+                continue;
             }
-        }
-        System.out.println("\n");
-    }
+            client.sendClientMessage(msg);
 
-    private void messageUsers(String user, String msg) throws IOException {
-        if (userID != null) {
-            outputStream.write((user + msg + "\n").getBytes());
         }
-    }
-
-    private void notifyUsers(String msg) throws IOException {
-        if (userID != null) {
-            outputStream.write((msg + "\n").getBytes());
-        }
-    }
-
-    private String removeCommand(String command, String remove){
-        String regex = "\\s*\\b" + remove + "\\b\\s*";
-        String update = command.replaceAll(regex,"");
-        return update;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package Server;
 
+import view.ChatBox;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,11 +25,12 @@ public class ServerInteraction extends Thread {
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(serverPort);
+            ChatBox chatBox = new ChatBox();
             while(true) {
                 System.out.println("Accepting client connection.");
                 Socket clientSocket = serverSocket.accept();
                 System.out.println(clientSocket + " has connected.");
-                ServerThread thread = new ServerThread(this, clientSocket);
+                ServerThread thread = new ServerThread(this, clientSocket, chatBox);
                 threadList.add(thread);
                 thread.start();
             }

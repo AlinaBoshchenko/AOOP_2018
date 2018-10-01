@@ -17,7 +17,9 @@ public class IndependentBot extends MigratoryBot {
     Vector<Socket> connectedServersSockets;
 
     public IndependentBot(ServerHandler serverHandler, ArrayList<ServerHandler> connectedServers) {
-        super(serverHandler, connectedServers, 4);
+        super(serverHandler, connectedServers);
+        this.possibleServers.add(serverHandler);
+
     }
 
 
@@ -49,19 +51,20 @@ public class IndependentBot extends MigratoryBot {
                 starvation = defaultStarvation;
             }
             else if(starvation % 2 == 0) { //if bot is close to starvation, connect to a new chat
+                System.out.println("BOT WANTS NEW SERVER. POSSIBILITIES " + possibleServers.size() + connectedServersSockets.size());
+                Vector <ServerHandler> freeServers= new Vector<>(possibleServers);
+
                 Socket newSocket = new Socket();
                 for(ServerHandler serverHandler : possibleServers) {
-                    boolean good = true;
                     for(Socket socket : connectedServersSockets) {
                         if(socket.getPort() == serverHandler.getPort()) {
-                            good = false;
+                            freeServers.remove(serverHandler);
                         }
                     }
-                    if(good) {
-                        newSocket.connect(new InetSocketAddress("localhost", serverHandler.getPort()));
-                        break;
-                    }
-
+                }
+                if(!freeServers.isEmpty()) {
+                    System.out.println("HE GOT IT");
+                    newSocket.connect(new InetSocketAddress("localhost", freeServers.get(random(0, freeServers.size())).getPort()));
                 }
                 if(newSocket.isConnected()) {
                     connectedServersSockets.add(newSocket);

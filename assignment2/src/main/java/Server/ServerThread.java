@@ -1,12 +1,14 @@
 package Server;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import view.ChatBox;
 
 import java.io.*;
 import java.net.Socket;
 
 
-public class ServerThread extends Thread {
+public class ServerThread extends Thread  {
 
 
     private static final String ADMISSIBLE_NAME_REGEX = "^[a-zA-Z0-9._-]{3,}$";
@@ -14,11 +16,13 @@ public class ServerThread extends Thread {
     private OutputStream outputStream;
     private InputStream inputStream;
     private final Socket clientSocket;
+    private ChatBox chatBox;
     private final ServerInteraction serverInteraction;
 
-    public ServerThread(ServerInteraction serverInteraction, Socket client){
+    public ServerThread(ServerInteraction serverInteraction, Socket client, ChatBox chatBox){
         this.serverInteraction = serverInteraction;
         this.clientSocket = client;
+        this.chatBox = chatBox;
     }
 
     public String getClientLogin() {
@@ -114,6 +118,9 @@ public class ServerThread extends Thread {
             }
             client.sendClientMessage(msg);
 
+        }
+        if(chatBox != null) {
+            chatBox.addNewMessage(msg);
         }
     }
 

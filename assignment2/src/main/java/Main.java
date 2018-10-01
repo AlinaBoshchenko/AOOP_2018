@@ -1,3 +1,4 @@
+import Client.IndependentBot;
 import Client.LocalBot;
 import Client.MigratoryBot;
 import Server.ServerHandler;
@@ -12,15 +13,16 @@ public class Main {
 		serverHandlers.add(server1);
 		ServerHandler server2 = new ServerHandler(8190);
 		serverHandlers.add(server2);
-		/*LocalBot testBot = new LocalBot(server1);
-		LocalBot testBot1 = new LocalBot(server1);
-		LocalBot testBot2 = new LocalBot(server1);*/
+
+		LocalBot testBot = new LocalBot(server1);
 		MigratoryBot testBot1 = new MigratoryBot(server1, serverHandlers);
 		MigratoryBot testBot2 = new MigratoryBot(server1, serverHandlers);
 		MigratoryBot testBot3 = new MigratoryBot(server1, serverHandlers);
-		//testBot.start();
+		IndependentBot toxicBot = new IndependentBot(server2, serverHandlers);
+		testBot.start();
 		testBot1.start();
 		testBot2.start();
 		testBot3.start();
+		toxicBot.start();
 	}
 }

@@ -1,5 +1,7 @@
 package Server;
 
+import javafx.beans.Observable;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -105,7 +107,7 @@ public class ServerThread extends Thread {
         outputStream.write(msg.getBytes());
     }
 
-    private void sendOtherClientsMessage(String msg) throws IOException {
+    private synchronized void sendOtherClientsMessage(String msg) throws IOException {
         for(ServerThread client : serverInteraction.getThreadList()) {
             if(client.getClientLogin() == null || client.equals(this)) {
                 continue;

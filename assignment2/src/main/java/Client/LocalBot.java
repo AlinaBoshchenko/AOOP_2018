@@ -3,6 +3,7 @@ package Client;
 import Server.ServerHandler;
 import Server.ServerInteraction;
 import com.sun.security.ntlm.Server;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
 
@@ -16,7 +17,7 @@ public class LocalBot extends Thread {
 
     protected String address;
     protected int port;
-    protected Socket socket = new Socket();
+    protected Socket socket;
     private ArrayList<String> message = new ArrayList<>();
     protected ServerInteraction serverInteraction;
     protected ServerHandler serverHandler;
@@ -75,6 +76,7 @@ public class LocalBot extends Thread {
     protected void starvate() {
         message = null;
     }
+
 
     protected void updateMessage(ArrayList<String> newMessages){
         ArrayList <String> oldMessage = message;
@@ -149,7 +151,9 @@ public class LocalBot extends Thread {
         return concatendated.toString();
     }
 
-    protected void beBot(BufferedReader bufferedReader, OutputStream serverOut) throws IOException {
+    protected void beBot() throws IOException {
+        OutputStream serverOut = socket.getOutputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         while (true) {
             ArrayList<String> skippedMessages = new ArrayList<>();
             while (bufferedReader.ready()) { //read all the skipped messages
@@ -171,9 +175,8 @@ public class LocalBot extends Thread {
     }
 
 
-    private void startBot(Socket socket) throws IOException {
+    protected void startBot(Socket socket) throws IOException {
         OutputStream serverOut = socket.getOutputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String randomNickName = "bot";
 
         boolean randomNickNameUnique = false;
@@ -187,9 +190,9 @@ public class LocalBot extends Thread {
                 }
             }
         }
-        botName = randomNickName;
-        serverOut.write(("-login " + randomNickName + "\n").getBytes());
-        beBot(bufferedReader, serverOut);
+        botName = "L_" + randomNickName;
+        serverOut.write(("-login " + botName + "\n").getBytes());
+        beBot();
 
     }
 
@@ -198,10 +201,9 @@ public class LocalBot extends Thread {
     public void run() {
         try {
             Thread.sleep(1000);
+            socket = new Socket();
             socket.connect(new InetSocketAddress(address, port));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         if(socket.isConnected()) {

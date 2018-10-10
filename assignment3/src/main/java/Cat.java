@@ -169,8 +169,11 @@ public class Cat extends Thread implements Serializable {
 		}
 		if(lives<=0) this.kill();
 	}
-	
-	// Recharge the battery at the cost of a life
+
+
+	/**
+	 * Transforms a life (if any) into 100 battery.
+	 */
 	private void updateBattery() {
 		if (this.battery<=0) {
 			this.decrementLives();

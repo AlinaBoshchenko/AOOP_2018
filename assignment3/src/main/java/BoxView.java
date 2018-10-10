@@ -32,11 +32,8 @@ public class BoxView extends javax.swing.JFrame implements Observer {
 	private void init() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(300, 300));
-        
-        //Set up the content pane.
         addComponentsToPane(this.getContentPane());
- 
-        //Display the window.
+
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);

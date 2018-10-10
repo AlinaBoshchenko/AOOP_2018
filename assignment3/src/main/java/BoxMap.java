@@ -7,7 +7,7 @@ public class BoxMap implements Serializable {
 	private List<Address> addresses;
 
 	public BoxMap() {
-		this.addresses = new ArrayList<Address>();
+		this.addresses = new ArrayList<>();
 	}
 	
 	public BoxMap(List<Address> addresses) {

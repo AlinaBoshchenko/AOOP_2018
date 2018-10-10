@@ -1,3 +1,5 @@
+import exceptions.FullBox;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -16,11 +18,11 @@ import javax.swing.JTextPane;
 public class BoxView extends javax.swing.JFrame implements Observer {
 	private static final long serialVersionUID = 1L;
 	private Box model;
-	JTextPane catslisting;
-	JLabel capacityLabel;
-	JLabel catsLabel;
+	private JTextPane catslisting;
+	private JLabel capacityLabel;
+	private JLabel catsLabel;
 	
-	public BoxView(Box box) {
+	BoxView(Box box) {
 		super(box.toString());
 		this.model = box;
 		model.addObserver(this);
@@ -74,32 +76,21 @@ public class BoxView extends javax.swing.JFrame implements Observer {
 		// Add cat to the box button
 		JButton button = new JButton("Add new cat");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                 try {
-                	 if(model.isRunning()) 
-                		 model.addCat(new Cat());
-                	 else 
-                		 System.err.println("Box is not running");
-                 } catch (ArrayIndexOutOfBoundsException e) {
-                	 System.err.println("Box is full, no cat added");
-                 }
-            }
-        });
+        button.addActionListener(arg0 -> {
+			 try {
+				 if(model.isRunning())
+					 model.addCat(new Cat());
+				 else
+					 System.err.println("Box is not running");
+			 } catch (FullBox e) {
+				 System.err.println("Box is full, no cat added");
+			 }
+		});
         pane.add(button);
-        
-        // Revive box button
+
 		button = new JButton("Open boxes");
 		button.setAlignmentX(Component.CENTER_ALIGNMENT);
-		button.addActionListener(new ActionListener() {
-		
-		    @Override
-		    public void actionPerformed(ActionEvent arg0) {
-		    	model.openBoxes();
-		    }
-		});
+		button.addActionListener(arg0 -> model.cleanUp());
 		pane.add(button);
 	}
 

@@ -3,31 +3,31 @@ import java.io.Serializable;
 public class Address implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int port;
-	private String name;
+	private String address;
 	
-	public Address(String a, int p) {
-		this.name = a;
-		this.port = p;
+	Address(String address, int port) {
+		this.address = address;
+		this.port = port;
 	}
 	
-	public int getPort() {
-		return this.port;
+	int getPort() {
+		return port;
 	}
 	
-	public String getName() {
-		return this.name;
+	String getAddress() {
+		return address;
 	}
 	
 	@Override
 	public boolean equals(Object a) {
 		if(a instanceof Address){
-            return (this.getName().equals(((Address) a).getName())) && (this.getPort() == ((Address) a).getPort());
+            return (this.getAddress().equals(((Address) a).getAddress())) && (this.getPort() == ((Address) a).getPort());
         }
         return false;
 	}
 	
 	@Override
 	public String toString() {
-		return name + ":" + port;
+		return address + ":" + port;
 	}
 }

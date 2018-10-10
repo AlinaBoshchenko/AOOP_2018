@@ -1,8 +1,6 @@
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -10,17 +8,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 public class BoxManagerView extends javax.swing.JFrame implements Observer {
 	private static final long serialVersionUID = 1L;
-	public BoxManager manager;
+	private BoxManager manager;
 	private JTextPane boxlisting;
 	private JLabel boxLabel;
 
-	public BoxManagerView(BoxManager manager) {
+	BoxManagerView(BoxManager manager) {
 		super(manager.toString());
 		this.manager = manager;
 		manager.addObserver(this);
@@ -30,11 +27,9 @@ public class BoxManagerView extends javax.swing.JFrame implements Observer {
 	private void initUI() {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(300, 300));
-        
-        //Set up the content pane.
+        //Set up the content pane:
         addComponentsToPane(this.getContentPane());
- 
-        //Display the window.
+        //Display the window:
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -59,103 +54,32 @@ public class BoxManagerView extends javax.swing.JFrame implements Observer {
 		
 		pane.add(list);
 		
-		// Add box to the manager button
+		// Add box button:
 		JButton button = new JButton("Add new box");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-            	try {
-	            	String input = "";
-					do {
-						input = JOptionPane.showInputDialog(BoxManagerView.this, "Give the ip-address and port number of the box", "Format = address:port");
-					} while (!input.contains(":"));
-					String[] serverAddressPort = input.split(":");
-					try {
-						BoxManagerView.this.manager.startBox(new Address(serverAddressPort[0], Integer.parseInt(serverAddressPort[1])));
-					} catch (NumberFormatException e) {
-						System.err.println("Argument wrong, insert an integer for the port");
-					}
-            	} catch (NullPointerException e) {
-					// Adding box aborted by user
-				}
-            }
-        });
+        button.addActionListener(new AddNewBoxAction(this));
         pane.add(button);
         
-        // Remove box from the manager button
+        // Remove box button:
  		button = new JButton("Remove box");
  		button.setAlignmentX(Component.CENTER_ALIGNMENT);
- 		button.addActionListener(new ActionListener() {
-
- 			@Override
- 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					String input = "";
-					input = JOptionPane.showInputDialog(BoxManagerView.this, "Give the ip-address and port number or number of the box", "Format = address:port");
-					String[] serverAddressPort = input.split(":");
-					if(serverAddressPort.length ==2) {
-						try {
-							BoxManagerView.this.manager.removeBox(new Address(serverAddressPort[0], Integer.parseInt(serverAddressPort[1])));
-						} catch (NumberFormatException e) {
-							System.err.println("Argument wrong, insert an integer for the port");
-						}
-					} else {
-						try {
-							int n = Integer.parseInt(serverAddressPort[0]);
-							if (n < BoxManagerView.this.manager.getBoxes().size()) {
-								BoxManagerView.this.manager.removeBox(n);
-							}
-						} catch (NumberFormatException e) {
-							System.err.println("Argument wrong, insert an integer");
-						}
-					}
-				} catch (NullPointerException e) {
-					// Removing box aborted by user
-				}
- 			}
- 		});
+ 		button.addActionListener(new RemoveBoxAction(this));
  		pane.add(button);
  		
- 		// Kill all cats in box button
- 		button = new JButton("Exterminate box");
+ 		// Trigger killing mechanism button:
+ 		button = new JButton("Trigger killing mechanism");
  		button.setAlignmentX(Component.CENTER_ALIGNMENT);
- 		button.addActionListener(new ActionListener() {
-
- 			@Override
- 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					String input = "";
-					input = JOptionPane.showInputDialog(BoxManagerView.this, "Give the ip-address and port number or number of the box", "Format = address:port");
-					String[] serverAddressPort = input.split(":");
-					if(serverAddressPort.length == 2) {
-						try {
-							BoxManagerView.this.manager.killAll(new Address(serverAddressPort[0], Integer.parseInt(serverAddressPort[1])));
-						} catch (NumberFormatException e) {
-							System.err.println("Argument wrong, insert an integer for the port");
-						}
-					} else {
-						try {
-							int n = Integer.parseInt(serverAddressPort[0]);
-							if (n < BoxManagerView.this.manager.getBoxes().size()) {
-								BoxManagerView.this.manager.killAll(n);
-							}
-						} catch (NumberFormatException e) {
-							System.err.println("Argument wrong, insert an integer");
-						}
-					}
-				} catch (NullPointerException e) {
-					// Removing box aborted by user
-				}
- 			}
- 		});
+ 		button.addActionListener(new TriggerKillingMechanismAction(this));
  		pane.add(button);
 	}
 
 	@Override
 	public void update(Observable o, Object arg) {
-		boxLabel.setText("Known boxes (" + this.manager.getBoxes().size() + "):");
-		boxlisting.setText(this.manager.getBoxListing());
+		boxLabel.setText("Known boxes (" + this.manager.getBoxesAddresses().size() + "):");
+		boxlisting.setText(manager.getBoxListing());
+	}
+
+	BoxManager getManager() {
+		return manager;
 	}
 }

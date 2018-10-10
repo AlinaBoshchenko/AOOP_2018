@@ -1,8 +1,9 @@
+import exceptions.FullBox;
+
+import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -17,212 +18,245 @@ public class Box extends Observable implements Runnable {
 	private Address address;
 	private boolean running;
 	private Random rand;
-	
-	// Constructor
-	public Box(int capacity, BoxMap map, Address address) {
+
+	/**
+	 * Creates a new box server with the specified capacity on the indicated address.
+	 * The server will belong to the passed Box Map, which means the cats that will connect to this server
+	 * will be able to teleport to other servers that belong to the same Box Map.
+	 */
+	Box(int capacity, BoxMap map, Address address) {
 		if(capacity < 0) throw new IllegalArgumentException("Capacity has to be positive");
 		this.name = System.nanoTime() % 1000;
 		this.capacity = capacity;
 		this.map = map;
-		this.cats = new ArrayList<Cat>();
+		this.cats = new ArrayList<>();
 		this.address = address;
 		this.running = false;
-		new BoxView(this);
-		if(BoxManager.debug_mode) System.out.println(this + " started at " + address);
+		if(BoxManager.isDebugModeOn()) System.out.println(this + " started at " + address);
 		this.setChanged();
 		this.notifyObservers();
 		rand = new Random();
 	}
-	
-	// Threadloop
+
 	@Override
 	public void run() {
 		running = true;
+		ServerSocket ss  = null;
 		try {
-			// Keeps listening for incoming cats
-			while(running) {
-				// Open connection
-				ServerSocket ss  = new ServerSocket(address.getPort());
-				Socket cs = ss.accept();
-				
+			ss = new ServerSocket(address.getPort());
+		} catch (IOException e) {
+			System.err.println("Failed to open server connection.");
+			running =false;
+		}
 
-				
-				// Receive command
-				ObjectInputStream ois = new ObjectInputStream(cs.getInputStream());
-				
-				Object object = ois.readObject();
-				// Try to receive a cat
-				try{
-					Cat cat = (Cat)object;
-					if (cat!=null) {
-						try{
-							this.addCat(cat);
-						} catch (ArrayIndexOutOfBoundsException e) {
-							if(BoxManager.debug_mode) System.out.println(cat + " died after teleporting because the box is full");
-						}
-					}
-				} catch (ClassCastException e1) {
-					// Try to receive BoxMap
-					try {
-						BoxMap bm = (BoxMap)object;
-						if (bm!=null) {
-							this.map = bm;
-						}
-					} catch (ClassCastException e2) {
-						// Try to receive command (string)
-						try {
-							String command = (String)object;
-							switch (command) {
-								case "killall":
-									this.killAllCats();
-									break;
-								case "stop":
-									this.killAllCats();
-									this.openBoxes();
-									this.stop();
-									this.map = null;
-									break;
-								case "openboxes":
-									openBoxes();
-									break;
-								default:
-									System.err.println("Command not recognized");
-							}
-						} catch (ClassCastException e3) {
-							System.err.println("Received class not found");
-						}
-					}
-				}
-				
-				// Close connection
-				cs.close();
-				ss.close();
-				
-				// Trigger killswitch
-				if (rand.nextInt(10) > 8) {
-					if (BoxManager.debug_mode) System.out.println(this + " triggers killswitch");
-					killAllCats();
-				}
+		while(running) {
+			Socket cs = null;
+			try {
+				cs = ss.accept();
+			} catch (IOException e) {
+				System.err.println("Failed to establish connection with client.");
 			}
-	    } catch (Exception e) {
-	         System.err.println("Receiving command failed");
-	         e.printStackTrace();
-	    }
+			if(cs == null) continue;
+			ObjectInputStream ois;
+			Object object = null;
+			try {
+				ois = new ObjectInputStream(cs.getInputStream());
+				object = ois.readObject();
+			} catch (IOException | ClassNotFoundException e) {
+				System.err.println("Failed to read the input stream.");
+			}
+			if(object instanceof Cat) {
+				Cat cat = (Cat) object;
+				try{
+					this.addCat(cat);
+				} catch (FullBox e) {
+					if(BoxManager.isDebugModeOn()) System.out.println(cat + " died after teleporting because the box is full");
+				}
+
+			}
+			else if(object instanceof BoxMap) {
+				this.map = (BoxMap)object;
+			}
+            else if(object instanceof String) {
+				performCommand((String)object);
+
+			} else {
+				System.err.println("Received class not found.");
+			}
+			if (rand.nextInt(10) > 8) {
+				if (BoxManager.isDebugModeOn()) System.out.println(this + " triggers killswitch");
+				killAllCats();
+			}
+
+			try {
+				cs.close();
+			} catch (IOException e) {
+				System.err.println("Failed to close connection with client.");
+			}
+		}
+
+		try {
+			if (ss != null) {
+				ss.close();
+			}
+		} catch (IOException e) {
+			System.err.println("Failed to close server connection.");
+		}
 	}
-	
-	// Methods
-	public void killAllCats() {
-		for(Cat c : cats) {
-			c.kill();
+
+
+	/**
+	 * Performs the specified command.
+	 */
+	private void performCommand(String command) {
+		switch (command) {
+			case "killall":
+				this.killAllCats();
+				break;
+			case "stop":
+				this.killAllCats();
+				this.cleanUp();
+				this.stop();
+				this.map = null;
+				break;
+			case "openboxes":
+				cleanUp();
+				break;
+			default:
+				System.err.println("Command not recognized");
+		}
+	}
+
+
+	/**
+	 * Returns the number of cats in the given box
+	 */
+	int getNrCats() {
+		return getCats().size();
+	}
+
+	/**
+	 * This method kills all the cats within a box.
+	 * Note: it does not remove their bodies
+	 */
+	void killAllCats() {
+		for(Cat cat : cats) {
+			cat.kill();
 		}
 		this.setChanged();
 		this.notifyObservers();
 	}
-	
-	// Remove dead cats, reset living cats to 9 lives
-	public void openBoxes() {
-		Iterator<Cat> iter = this.getCats().iterator();
-		while(iter.hasNext()) {
-			Cat c = iter.next();
-			if(c.getAlive()) {
-				c.revive();
-			} else {
-				System.out.println("Dead cat " + c + " removed from box " + this);
-				iter.remove();											
-			} 
-		} 
+
+	/**
+	 * This methods removes all the bodies of dead cats from a box.
+	 */
+	void removeDeadCats() {
+		Iterator<Cat> iterator = getCats().iterator();
+		while (iterator.hasNext()) {
+			Cat cat = iterator.next();
+			if(!cat.isLiving()) {
+				System.out.println("Dead cat " + cat + " removed from box " + this);
+				iterator.remove();
+			}
+		}
 		this.setChanged();
 		this.notifyObservers();
 	}
 
-	// Adds new cat to the box if possible, throws exception otherwise
-	public void addCat(Cat c) {
-		if(cats.size()+1 > this.capacity) throw new ArrayIndexOutOfBoundsException("Box is full");
+
+	/**
+	 * This method resets the lives to all the living cats within the box to 9.
+	 */
+	private void repairLivingCats() {
+		for(Cat cat : getCats()) {
+			if(cat.isLiving()) {
+				cat.resetLives();
+			}
+		}
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+	/**
+	 * This methods removes all the bodies of dead cats from a box and resets the lives of living cats to 9.
+	 */
+	void cleanUp() {
+		removeDeadCats();
+		repairLivingCats();
+		this.setChanged();
+		this.notifyObservers();
+	}
+
+
+	/**
+	 * Adds a new cat to this box. Throws FullBox exception if the box is full.
+	 */
+	void addCat(Cat c) throws FullBox {
+		if(cats.size()+1 > this.capacity) throw new FullBox("Box is full");
 		cats.add(c);
 		c.setBox(this);
 		c.start();
 		this.setChanged();
 		this.notifyObservers();
 	}
-	
-	public void removeCat(Cat c) {
+
+
+	/**
+	 * Removes a cat from this box.
+	 */
+	void removeCat(Cat c) {
 		cats.remove(c);
 		this.setChanged();
 		this.notifyObservers();
 	}
-	
+
+	@Override
 	public String toString() {
 		return "Box" + Long.toString(name);
 	}
-	
-	public void stop() {
+
+	private void stop() {
 		this.running = false;
 	}
 	
-	// Getters and setters
-	public List<Cat> getCats() {
+
+	List<Cat> getCats() {
 		return cats;
 	}
-	
-	public String getCatListing() {
-		String text = "";
-		for(int i = 0; i < this.cats.size(); i++) {
-			Cat cat = this.cats.get(i);
-			if (!cat.getAlive()) {
-				text += cat + " (dead)\n";
+
+
+	/**
+	 * Returns the formatted list of cats as a String.
+	 */
+	String getCatListing() {
+		StringBuilder text = new StringBuilder();
+		for(Cat cat :cats) {
+			text.append(cat);
+			if(!cat.isLiving()) {
+				text.append(" (dead)\n");
 			} else {
-				text +=  cat + " (" + cat.getLives() + " lives, " + cat.getBattery() + "% battery)\n";
+				text.append(" (").append(cat.getLives()).append(" lives, ");
+				text.append(cat.getBattery()).append("% battery)\n");
 			}
+
 		}
-		return text;
+		return text.toString();
 	}
 	
-	public List<Address> getBoxAddresses() {
+	List<Address> getBoxAddresses() {
 		return this.map.getBoxAddresses();
 	}
 	
-	public Address getAddress() {
+	Address getAddress() {
 		return this.address;
 	}
 
-	public int getCapacity() {
+	int getCapacity() {
 		return this.capacity;
 	}
 	
-	public Boolean isRunning() {
+	Boolean isRunning() {
 		return running;
 	}
-	
-	
-	/**
-	 * Usage:
-	 * Box <capacity><port>
-	 */
-	public static void main (String [] args) {	
-		// Input arguments
-		int CAPACITY;
-		Address ADDRESS;
-		
-		if (args.length >= 2) {
-			try {
-				CAPACITY = Integer.parseInt(args[0]);
-				ADDRESS = new Address(Inet4Address.getLocalHost().getHostAddress(), Integer.parseInt(args[1]));
-				
-				// Creating a new box
-				Box b = new Box(CAPACITY,  new BoxMap(), ADDRESS);
-				Thread t = new Thread(b);
-				t.start();
-				
-			} catch (NumberFormatException e) {
-				System.err.println("Usage: java Box <capacity> <address> <port>");
-				System.exit(1);
-			} catch (UnknownHostException e) {
-				System.err.println("Making Inet4Address failed");
-				System.exit(1);
-			}
-		} else {
-			System.err.println("Usage: java Box <capacity> <port>");
-			System.exit(1);
-		}
-	}
+
 }

@@ -25,5 +25,5 @@ jobs:
 
       # run tests!
       - run:
-            working_directory: intSet
+            working_directory: assignment2
             command: mvn integration-test

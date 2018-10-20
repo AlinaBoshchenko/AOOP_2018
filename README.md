@@ -2,6 +2,8 @@
 
 In this repository we will put the assignments and helpful additional files that you need for the assignment.
 
+**Note about assignment 2: There is a README file in the folder. Take a look at it before you begin working!**
+
 
 ## Submitting assignments
 

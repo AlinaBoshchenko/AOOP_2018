@@ -1,6 +1,7 @@
 package aoop.asteroids.gui;
 
 import aoop.asteroids.gui.actionListeners.singleGameActionListener;
+import aoop.asteroids.gui.actionListeners.spectateGameActionListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,13 +10,14 @@ public class MainMenu extends JFrame {
     final String FRAME_NAME = "Asteroids Game";
     private static JTextField nickNameField;
     private static JButton join;
-    private static JButton singleGameButton1;
+    private static JButton singleGameButton;
     private static JButton hostButton;
     private static JTextField ipField;
     private static JTextField portField;
     private static JCheckBox spectatableCheckBox;
     private static JLabel maxClientsLabel;
     private static JTextField maxClientsField;
+    private static JButton spectateButton;
 
     MainMenu() {
         Toolkit tk = Toolkit.getDefaultToolkit();
@@ -46,7 +48,8 @@ public class MainMenu extends JFrame {
     }
 
     private static void addActionListeners() {
-        singleGameButton1.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxClientsField));
+        singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxClientsField));
+        spectateButton.addActionListener(new spectateGameActionListener(ipField, portField));
 
     }
 
@@ -65,7 +68,7 @@ public class MainMenu extends JFrame {
 
     private static void createOptionsPanel(Container pane, Dimension screenDimension) {
         JPanel optionsButtonsPanel = new JPanel(new FlowLayout());
-        JButton spectateButton = new JButton("Spectate");
+        spectateButton = new JButton("Spectate");
         optionsButtonsPanel.add(spectateButton);
         join = new JButton("Join");
         optionsButtonsPanel.add(join);
@@ -78,8 +81,8 @@ public class MainMenu extends JFrame {
 
     private static void createSingleGamePanel(Container pane, Dimension screenDimension) {
         JPanel singleGamePanel = new JPanel(new FlowLayout());
-        singleGameButton1 = new JButton("Start single game");
-        singleGamePanel.add(singleGameButton1);
+        singleGameButton = new JButton("Start single game");
+        singleGamePanel.add(singleGameButton);
         spectatableCheckBox = new JCheckBox("Spectatable");
         singleGamePanel.add(spectatableCheckBox);
         singleGamePanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));

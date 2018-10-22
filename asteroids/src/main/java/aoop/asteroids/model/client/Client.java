@@ -15,6 +15,7 @@ public class Client {
     public Client(InetAddress inetAddress, int port) {
         this.inetAddress = inetAddress;
         this.port = port;
+        System.out.println("Trying connection with " + inetAddress.getHostAddress() + port);
         connected = enstablishConnection(inetAddress, port);
         if(connected) {
             System.out.println("Rabotaet");

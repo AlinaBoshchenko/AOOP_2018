@@ -31,7 +31,7 @@ public class singleGameActionListener implements ActionListener {
         if(spectatableCheckBox.isSelected()) {
             Server server = new Server(Integer.parseInt(portField.getText()), Integer.parseInt(maxClientsField.getText()));
             new Thread(server);
-
+            //v rot ebal
         }
     }
 }

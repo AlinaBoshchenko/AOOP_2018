@@ -46,7 +46,7 @@ public class MainMenu extends JFrame {
     }
 
     private static void addActionListeners() {
-        singleGameButton1.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox));
+        singleGameButton1.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxClientsField));
 
     }
 

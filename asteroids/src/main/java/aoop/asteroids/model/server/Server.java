@@ -17,7 +17,7 @@ public class Server implements Observer, Runnable {
     private boolean running;
     private List<ConnectedClient> connectedClients;
 
-    Server(int port, int maxSpectators) {
+    public Server(int port, int maxSpectators) {
         this.port = port;
         this.maxSpectators = maxSpectators;
         connectedClients = new ArrayList<>(maxSpectators);
@@ -54,13 +54,13 @@ public class Server implements Observer, Runnable {
         switch (packetHeader) {
             default:
             case PACKET_LOGIN:
-                clientLogin(datagramPacket.getAddress());
-            case PACKET_SPECTATE:
-                spectating(datagramPacket.getAddress();
-                break;
-            case PACKET_DISCONNECT:
-                disconnectAll();
-                break;
+                clientLogin(datagramPacket.getAddress(), datagramPacket.getPort());
+//            case PACKET_SPECTATE:
+//                spectating(datagramPacket.getAddress();
+//                break;
+//            case PACKET_DISCONNECT:
+//                disconnectAll();
+//                break;
         }
 
     }
@@ -69,41 +69,63 @@ public class Server implements Observer, Runnable {
     /**
      * Add all clients to a server
      */
-    private void clientLogin(InetAddress ip) {
-        if(connectedClients.size()!= maxSpectators)
-            (this.connectedClients().add(new ConnectedClient(ip));
+    private void clientLogin(InetAddress ip, int port) {
+        if(connectedClients.size() != maxSpectators) {
+            this.connectedClients.add(new ConnectedClient(ip));
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            new = new ObjectOutputStream();
+            ObjectOutput oo;
+            try {
+                oo = new ObjectOutputStream(bStream);
+                oo.writeObject(PacketHeader.PACKET_ACCEPTED);
+                oo.close();
+            } catch (IOException e) {
+                //TODO: logger
+                e.printStackTrace();
+                return;
+            }
+            byte [] serializedMessage = bStream.toByteArray();
+            DatagramSocket datagramSocket;
+            DatagramPacket datagramPacket;
+            try {
+                datagramSocket = new DatagramSocket();
+                datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, ip, port);
+                datagramSocket.send(datagramPacket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
 
-    PacketHeader.PACKET_ACCEPTED;
+
+
     }
 
     /**
      * Add all spectators to the server
      */
-    private void spectating(InetAddress ip) {
-
-        ConnectedClient spectator = new ConnectedClient(ip);
-        this.connectedClients().add(spectator);
-    }
+//    private void spectating(InetAddress ip) {
+//
+//        ConnectedClient spectator = new ConnectedClient(ip);
+//        this.connectedClients().add(spectator);
+//    }
 
     /**
      * disconnects all spectators and diagramSocket from the server
      * */
-    private void disconnectAll() {
-        for (ConnectedClient spectator : getSpectators()) {
-            this.getSpectators().remove(spectator);
-           // datagramSocket.disconnect();
-            datagramSocket.close();
-
-        }
-    }
-
-    private ArrayList<ConnectedClient> getSpectators() {
-        ArrayList<ConnectedClient> spectators;
-        spectators = (ArrayList<ConnectedClient>) this.connectedClients;
-        return spectators;
-    }
+//    private void disconnectAll() {
+//        for (ConnectedClient spectator : getSpectators()) {
+//            this.getSpectators().remove(spectator);
+//           // datagramSocket.disconnect();
+//            datagramSocket.close();
+//
+//        }
+//    }
+//
+//    private ArrayList<ConnectedClient> getSpectators() {
+//        ArrayList<ConnectedClient> spectators;
+//        spectators = (ArrayList<ConnectedClient>) this.connectedClients;
+//        return spectators;
+//    }
 
 
 

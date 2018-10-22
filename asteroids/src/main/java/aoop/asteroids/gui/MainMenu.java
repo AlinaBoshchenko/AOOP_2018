@@ -14,6 +14,8 @@ public class MainMenu extends JFrame {
     private static JTextField ipField;
     private static JTextField portField;
     private static JCheckBox spectatableCheckBox;
+    private static JLabel maxClientsLabel;
+    private static JTextField maxClientsField;
 
     MainMenu() {
         Toolkit tk = Toolkit.getDefaultToolkit();
@@ -22,7 +24,7 @@ public class MainMenu extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(d.width/3, d.height/5));
         addComponentsToPane(this.getContentPane(), d);
-
+        addActionListeners();
 
         this.pack();
         this.setVisible(true);
@@ -36,11 +38,15 @@ public class MainMenu extends JFrame {
 
     private static void addComponentsToPane(Container pane, Dimension screenDimension) {
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-
         createNickNamePanel(pane, screenDimension);
         createSingleGamePanel(pane, screenDimension);
+        createMaxClientsPanel(pane, screenDimension);
         createOptionsPanel(pane, screenDimension);
         createHostPanel(pane, screenDimension);
+    }
+
+    private static void addActionListeners() {
+        singleGameButton1.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox));
 
     }
 
@@ -66,18 +72,29 @@ public class MainMenu extends JFrame {
         hostButton = new JButton("Host");
         optionsButtonsPanel.add(hostButton);
         optionsButtonsPanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
+
         addRow(optionsButtonsPanel, pane);
     }
 
     private static void createSingleGamePanel(Container pane, Dimension screenDimension) {
         JPanel singleGamePanel = new JPanel(new FlowLayout());
         singleGameButton1 = new JButton("Start single game");
-        singleGameButton1.addActionListener(new singleGameActionListener(nickNameField.getText()));
         singleGamePanel.add(singleGameButton1);
         spectatableCheckBox = new JCheckBox("Spectatable");
         singleGamePanel.add(spectatableCheckBox);
         singleGamePanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
         addRow(singleGamePanel, pane);
+    }
+
+    private static void createMaxClientsPanel(Container pane, Dimension screenDimension) {
+        JPanel maxClientsPanel = new JPanel(new FlowLayout());
+        maxClientsLabel = new JLabel("Maximum players: ");
+        maxClientsPanel.add(maxClientsLabel);
+        maxClientsField = new JTextField("2");
+        maxClientsField.setPreferredSize(new Dimension(screenDimension.width/25, nickNameField.getPreferredSize().height));
+        maxClientsPanel.add(maxClientsField);
+        maxClientsPanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
+        addRow(maxClientsPanel, pane);
     }
 
     private static void createNickNamePanel(Container pane, Dimension screenDimension) {

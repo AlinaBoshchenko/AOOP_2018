@@ -1,5 +1,9 @@
 package aoop.asteroids.model.server;
 
+import aoop.asteroids.model.packet.ClientAskSpectatePacket;
+import aoop.asteroids.model.packet.GamePacket;
+import aoop.asteroids.model.packet.server.ServerSpectatingAcceptedPacket;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -24,6 +28,7 @@ public class Server implements Observer, Runnable {
     public void run() {
         running = false;
         try {
+            //System.out.println("Started server datagram on " + port);
             datagramSocket = new DatagramSocket(port);
             running = true;
         } catch (SocketException e) {
@@ -33,103 +38,28 @@ public class Server implements Observer, Runnable {
             //TODO: Logger
             e.printStackTrace();
         }
-        try {
-            System.out.println("DataGram socket created on ip: " + InetAddress.getLocalHost() + " on port: " + port);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+
         byte bytes[] = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         while(running) {
             try {
-                System.out.println("Waiting for packet");
                 datagramSocket.receive(datagramPacket);
-                System.out.println("Packet received");
-                handlePacket(datagramPacket);
+                ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
+                handlePacket((GamePacket) objStream.readObject(), datagramPacket.getAddress(), datagramPacket.getPort());
+                objStream.close();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    void handlePacket(DatagramPacket datagramPacket) throws IOException, ClassNotFoundException {
-        ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-        PacketHeader packetHeader = (PacketHeader) objStream.readObject();
-        switch (packetHeader) {
-            default:
-            case PACKET_LOGIN:
-                clientLogin(datagramPacket.getAddress(), datagramPacket.getPort());
-//            case PACKET_SPECTATE:
-//                spectating(datagramPacket.getAddress();
-//                break;
-//            case PACKET_DISCONNECT:
-//                disconnectAll();
-//                break;
+
+    void handlePacket(GamePacket packet, InetAddress inetAddress, int port) {
+        if(packet instanceof ClientAskSpectatePacket) {
+            new ServerSpectatingAcceptedPacket().sendEmptyPacket(datagramSocket, inetAddress, port);
         }
-
     }
-
-
-    /**
-     * Add all clients to a server
-     */
-    private void clientLogin(InetAddress ip, int port) {
-        if(connectedClients.size() != maxSpectators) {
-            this.connectedClients.add(new ConnectedClient(ip));
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            ObjectOutput oo;
-            try {
-                oo = new ObjectOutputStream(bStream);
-                oo.writeObject(PacketHeader.PACKET_ACCEPTED);
-                oo.close();
-            } catch (IOException e) {
-                //TODO: logger
-                e.printStackTrace();
-                return;
-            }
-            byte [] serializedMessage = bStream.toByteArray();
-            DatagramSocket datagramSocket;
-            DatagramPacket datagramPacket;
-            try {
-                datagramSocket = new DatagramSocket();
-                datagramPacket = new DatagramPacket(serializedMessage, serializedMessage.length, ip, port);
-                datagramSocket.send(datagramPacket);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
-
-
-
-    }
-
-    /**
-     * Add all spectators to the server
-     */
-//    private void spectating(InetAddress ip) {
-//
-//        ConnectedClient spectator = new ConnectedClient(ip);
-//        this.connectedClients().add(spectator);
-//    }
-
-    /**
-     * disconnects all spectators and diagramSocket from the server
-     * */
-//    private void disconnectAll() {
-//        for (ConnectedClient spectator : getSpectators()) {
-//            this.getSpectators().remove(spectator);
-//           // datagramSocket.disconnect();
-//            datagramSocket.close();
-//
-//        }
-//    }
-//
-//    private ArrayList<ConnectedClient> getSpectators() {
-//        ArrayList<ConnectedClient> spectators;
-//        spectators = (ArrayList<ConnectedClient>) this.connectedClients;
-//        return spectators;
-//    }
 
 
 

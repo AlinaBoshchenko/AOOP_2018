@@ -22,7 +22,8 @@ public class spectateGameActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            new Client(InetAddress.getByName(ipField.getText()), Integer.parseInt(portField.getText()));
+            Client client = new Client(InetAddress.getByName(ipField.getText()), Integer.parseInt(portField.getText()));
+            new Thread(client).start();
         } catch (UnknownHostException e1) {
             e1.printStackTrace();
         }

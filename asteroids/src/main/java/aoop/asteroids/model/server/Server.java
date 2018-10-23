@@ -1,10 +1,7 @@
 package aoop.asteroids.model.server;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -36,11 +33,18 @@ public class Server implements Observer, Runnable {
             //TODO: Logger
             e.printStackTrace();
         }
+        try {
+            System.out.println("DataGram socket created on ip: " + InetAddress.getLocalHost() + " on port: " + port);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         byte bytes[] = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         while(running) {
             try {
+                System.out.println("Waiting for packet");
                 datagramSocket.receive(datagramPacket);
+                System.out.println("Packet received");
                 handlePacket(datagramPacket);
             } catch (Exception e) {
                 e.printStackTrace();

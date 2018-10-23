@@ -30,8 +30,7 @@ public class singleGameActionListener implements ActionListener {
         new Asteroids();
         if(spectatableCheckBox.isSelected()) {
             Server server = new Server(Integer.parseInt(portField.getText()), Integer.parseInt(maxClientsField.getText()));
-            new Thread(server);
-            //v rot ebal
+            new Thread(server).start();
         }
     }
 }

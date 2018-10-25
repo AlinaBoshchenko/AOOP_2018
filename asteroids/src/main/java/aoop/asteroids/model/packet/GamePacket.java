@@ -10,7 +10,13 @@ abstract public class GamePacket implements Serializable {
     private byte [] contentAsByteArray;
     private final static Logger logger = Logger.getLogger(GamePacket.class.getName());
 
-
+    /**
+     *
+     * @param from
+     * @param inetAddress
+     * @param port
+     * @return
+     */
     public boolean sendEmptyPacket(DatagramSocket from, InetAddress inetAddress, int port) {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo;

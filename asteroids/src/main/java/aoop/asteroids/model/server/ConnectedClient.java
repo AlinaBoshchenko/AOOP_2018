@@ -1,15 +1,19 @@
 package aoop.asteroids.model.server;
 
+import aoop.asteroids.model.Game;
+
 import java.net.InetAddress;
 
 public class ConnectedClient {
-    private final static int maxTimeoutTicks = 5;
+    private final static int maxTimeoutTicks = 5*1000/Game.getGameTickTime();
     private InetAddress inetAddress;
+    private int port;
     private int timeoutTick;
 
-    ConnectedClient(InetAddress inetAddress) {
+    ConnectedClient(InetAddress inetAddress, int port) {
         this.inetAddress = inetAddress;
         timeoutTick = maxTimeoutTicks;
+        this.port = port;
     }
 
     public InetAddress getInetAddress() {
@@ -20,7 +24,29 @@ public class ConnectedClient {
         return timeoutTick;
     }
 
-    private void updateConnectionStatus(boolean connected) {
-        timeoutTick = connected ? 5 : (timeoutTick - 1);
+
+    public void refreshTimeoutTicks() {
+        timeoutTick = maxTimeoutTicks;
+    }
+
+    public void decreaseTimeoutTicks() {
+        --timeoutTick;
+    }
+
+    public boolean isTimeouted() {
+        return timeoutTick <= 0;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof ConnectedClient)) {
+            return false;
+        }
+        ConnectedClient other = (ConnectedClient) obj;
+        return inetAddress.equals(other.getInetAddress()) && port == other.getPort();
     }
 }

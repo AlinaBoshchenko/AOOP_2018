@@ -59,6 +59,11 @@ public class Game extends Observable implements Runnable
 	/** Asteroid limit. */
 	private int asteroidsLimit;
 
+	/**
+	 * The time between each game tick.
+	 */
+	private static final int gameTickTime = 40;
+
 	/** 
 	 *	Indicates whether the a new game is about to be started. 
 	 *
@@ -303,7 +308,7 @@ public class Game extends Observable implements Runnable
 				executionTime = System.currentTimeMillis ();
 				this.update ();
 				executionTime -= System.currentTimeMillis ();
-				sleepTime = Math.max (0, 40 + executionTime);
+				sleepTime = Math.max (0, gameTickTime + executionTime);
 			}
 			else sleepTime = 100;
 
@@ -319,5 +324,12 @@ public class Game extends Observable implements Runnable
 			}
 		}
 	}
-    
+
+
+	/**
+	 * Returns the value of the game tick
+	 */
+	public static int getGameTickTime() {
+		return gameTickTime;
+	}
 }

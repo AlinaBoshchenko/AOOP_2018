@@ -1,25 +1,29 @@
 package aoop.asteroids.model.client;
 
+import aoop.asteroids.model.Game;
 import aoop.asteroids.model.packet.ClientAskSpectatePacket;
+import aoop.asteroids.model.packet.ClientSpectatingPacket;
 import aoop.asteroids.model.packet.GamePacket;
 import aoop.asteroids.model.packet.server.ServerSpectatingDeniedPacket;
 
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class Client implements Runnable {
     private final static int CLIENT_TIMEOUT_TIME = 5;
-    private InetAddress inetAddress;
-    private int port;
-    private boolean connected;
+    private InetAddress serverAddress;
+    private int serverPort;
+    private AtomicBoolean connected = new AtomicBoolean(false);
     private final static Logger logger = Logger.getLogger(Client.class.getName());
     private DatagramSocket datagramSocket;
 
 
-    public Client(InetAddress inetAddress, int port) {
-        this.inetAddress = inetAddress;
-        this.port = port;
+    public Client(InetAddress serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
     }
 
     private boolean enstablishConnection(InetAddress inetAddress, int port) {
@@ -57,12 +61,22 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Trying connection with " + inetAddress.getHostAddress() + ":" +  port);
-        connected = enstablishConnection(inetAddress, port);
-        if(!connected) {
+        System.out.println("Trying connection with " + serverAddress.getHostAddress() + ":" + serverPort);
+        connected.set(enstablishConnection(serverAddress, serverPort));
+        if(!connected.get()) {
             datagramSocket.close();
             logger.severe("[ERROR] Could not open client datagram socket.");
         }
         System.out.println("HANDSHAKE");
+        new Thread(() -> {
+            while(connected.get()) {
+                new ClientSpectatingPacket().sendEmptyPacket(datagramSocket, serverAddress, serverPort);
+                try {
+                    Thread.sleep(Game.getGameTickTime()*4);
+                } catch (InterruptedException e) {
+                    logger.severe("[ERROR] Spectating connection maintaining thread interrupted: " + e.getMessage());
+                }
+            }
+        }).start();
     }
 }

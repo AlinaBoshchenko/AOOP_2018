@@ -1,27 +1,26 @@
 package aoop.asteroids.model.server;
 
 import aoop.asteroids.model.packet.ClientAskSpectatePacket;
+import aoop.asteroids.model.packet.ClientSpectatingPacket;
 import aoop.asteroids.model.packet.GamePacket;
 import aoop.asteroids.model.packet.server.ServerSpectatingAcceptedPacket;
+import aoop.asteroids.model.packet.server.ServerSpectatingDeniedPacket;
 
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class Server implements Observer, Runnable {
     private DatagramSocket datagramSocket;
     private final int port;
     private final int maxSpectators;
     private boolean running;
-    private List<ConnectedClient> connectedClients;
+    private final Set<ConnectedClient> connectedClients;
 
     public Server(int port, int maxSpectators) {
         this.port = port;
         this.maxSpectators = maxSpectators;
-        connectedClients = new ArrayList<>(maxSpectators);
+        connectedClients = Collections.synchronizedSet(new LinkedHashSet<>(maxSpectators));
     }
 
     @Override
@@ -55,10 +54,35 @@ public class Server implements Observer, Runnable {
     }
 
 
-    void handlePacket(GamePacket packet, InetAddress inetAddress, int port) {
+    private void handlePacket(GamePacket packet, InetAddress inetAddress, int port) {
         if(packet instanceof ClientAskSpectatePacket) {
-            new ServerSpectatingAcceptedPacket().sendEmptyPacket(datagramSocket, inetAddress, port);
+            handleAskSpectate(inetAddress, port);
+        } else if (packet instanceof ClientSpectatingPacket) {
+            handleSpectatingPacket(inetAddress, port);
         }
+    }
+
+    private void handleSpectatingPacket(InetAddress from, int port) {
+        ConnectedClient client = new ConnectedClient(from, port);
+        synchronized (connectedClients) {
+            for (ConnectedClient iteratedClient : connectedClients) {
+                if (iteratedClient.equals(client)) {
+                    iteratedClient.refreshTimeoutTicks();
+                }
+            }
+        }
+    }
+
+    private void handleAskSpectate(InetAddress from, int port) {
+        if(connectedClients.size() == maxSpectators) {
+            new ServerSpectatingDeniedPacket().sendEmptyPacket(datagramSocket, from, port);
+            return;
+        }
+        new ServerSpectatingAcceptedPacket().sendEmptyPacket(datagramSocket, from, port);
+        synchronized(connectedClients) {
+            connectedClients.add(new ConnectedClient(from, port));
+        }
+
     }
 
 
@@ -66,6 +90,17 @@ public class Server implements Observer, Runnable {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        synchronized (connectedClients) {
+            Iterator<ConnectedClient> iterator = connectedClients.iterator();
+            ConnectedClient client;
+            while (iterator.hasNext()) {
+                client = iterator.next();
+                client.decreaseTimeoutTicks();
+                if(client.isTimeouted()) {
+                    iterator.remove();
+                    System.out.println("Cleared client.");
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,9 @@
 package aoop.asteroids.gui.actionListeners;
 
 import aoop.asteroids.Asteroids;
+import aoop.asteroids.gui.AsteroidsFrame;
+import aoop.asteroids.gui.Player;
+import aoop.asteroids.model.Game;
 import aoop.asteroids.model.server.Server;
 
 
@@ -27,10 +30,16 @@ public class singleGameActionListener implements ActionListener {
         {
             System.setProperty ("apple.laf.useScreenMenuBar", "true");
         }
-        new Asteroids();
+        Player player = new Player ();
+        Game game = new Game ();
+        game.linkController (player);
+        AsteroidsFrame frame = new AsteroidsFrame (game, player);
+        Thread t = new Thread (game);
+        t.start ();
         if(spectatableCheckBox.isSelected()) {
             Server server = new Server(Integer.parseInt(portField.getText()), Integer.parseInt(maxClientsField.getText()));
             new Thread(server).start();
+            game.addObserver(server);
         }
     }
 }

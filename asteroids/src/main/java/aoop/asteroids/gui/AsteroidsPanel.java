@@ -6,11 +6,7 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.model.client.Client;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.lang.Object;
 import java.util.Observable;
@@ -72,13 +68,32 @@ public class AsteroidsPanel extends JPanel
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
 
+		this.paintMessage(g2);
 		this.paintSpaceship (g2);
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
 
+		g2.setFont(getFont().deriveFont(12f));
 		g2.setColor (Color.WHITE);
 		g2.drawString (String.valueOf (this.game.getPlayer ().getScore ()), 20, 20);
 	}
+
+	/**
+	 *	Draws the game message if any.
+	 *
+	 *	@param g2 graphics instance to use.
+	 */
+	private void paintMessage (Graphics2D g2)
+	{
+		String gameMessage = game.getGameMessage();
+		if(gameMessage != null) {
+			g2.setFont(getFont().deriveFont(20f));
+			g2.setColor(Color.WHITE);
+			FontMetrics fm = g2.getFontMetrics();
+			g2.drawString(gameMessage, getWidth() / 2 - fm.stringWidth(gameMessage) / 2, getHeight() / 2 + fm.getAscent() / 2);
+		}
+	}
+
 
 	/**
 	 *	Draws all bullets in the GUI as a yellow circle.
@@ -127,7 +142,7 @@ public class AsteroidsPanel extends JPanel
 		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 0.8 * Math.PI) * 20), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 0.8 * Math.PI) * 20));
 		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 1.2 * Math.PI) * 20), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 1.2 * Math.PI) * 20));
 
-		g.setColor (Color.BLACK);
+		g.setColor (s.getColor());
 		g.fill (p);
 		g.setColor (Color.WHITE);
 		g.draw (p);

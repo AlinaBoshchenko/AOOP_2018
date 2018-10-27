@@ -120,6 +120,7 @@ public class Server implements Observer, Runnable {
         if(!(o instanceof Game)) {
             return;
         }
+        currentGame = (Game) o;
         synchronized (connectedClients) {
             Iterator<ConnectedClient> iterator = connectedClients.iterator();
             ConnectedClient client;
@@ -131,7 +132,6 @@ public class Server implements Observer, Runnable {
                     logger.fine("[SERVER] " + client.getInetAddress().getHostAddress() + ":" + client.getPort() + " disconnected.");
                     continue;
                 }
-                currentGame = (Game) o;
                 new ServerUpdatedGamePacket(currentGame).sendPacket(datagramSocket, client.getInetAddress(), client.getPort());
             }
         }

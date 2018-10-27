@@ -61,6 +61,11 @@ public class Game extends Observable implements Runnable, Serializable
 	transient private int asteroidsLimit;
 
 	/**
+	 * The game message to display
+	 */
+	private String gameMessage = null;
+
+	/**
 	 * The time between each game tick.
 	 */
 	private static final int gameTickTime = 40;
@@ -94,6 +99,7 @@ public class Game extends Observable implements Runnable, Serializable
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
 		this.ship.reinit ();
+		this.gameMessage = null;
 	}
 
 	/** 
@@ -217,6 +223,7 @@ public class Game extends Observable implements Runnable, Serializable
 			{ // Collision with playerß -> destroy both objects
 				b.destroy ();
 				this.ship.destroy ();
+				gameMessage = "Game Over";
 			}
 		}
 
@@ -226,6 +233,7 @@ public class Game extends Observable implements Runnable, Serializable
 			{ // Collision with player -> destroy both objects.
 				a.destroy ();
 				this.ship.destroy ();
+				gameMessage = "Game Over";
 			}
 		}
 	}
@@ -272,7 +280,7 @@ public class Game extends Observable implements Runnable, Serializable
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */ 
-	private boolean gameOver ()
+	private boolean isGameOver()
 	{
 		return this.ship.isDestroyed ();
 	}
@@ -310,7 +318,7 @@ public class Game extends Observable implements Runnable, Serializable
 		long executionTime, sleepTime;
 		while (true)
 		{
-			if (!this.gameOver () && !this.aborted)
+			if (!this.isGameOver() && !this.aborted)
 			{
 				executionTime = System.currentTimeMillis ();
 				this.update ();
@@ -322,6 +330,8 @@ public class Game extends Observable implements Runnable, Serializable
 			try
 			{
 				Thread.sleep (sleepTime);
+				setChanged();
+				notifyObservers();
 			}
 			catch (InterruptedException e)
 			{
@@ -352,5 +362,13 @@ public class Game extends Observable implements Runnable, Serializable
 	 */
 	public boolean isNewer(Game other) {
 		return this.getGameTickCount() > other.getGameTickCount();
+	}
+
+	/**
+	 * Returns the game message.
+	 * @return the game message as string, null if there is not any.
+	 */
+	public String getGameMessage() {
+		return gameMessage;
 	}
 }

@@ -1,6 +1,5 @@
 package aoop.asteroids.gui.actionListeners;
 
-import aoop.asteroids.Asteroids;
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.gui.Player;
 import aoop.asteroids.model.Game;
@@ -37,7 +36,7 @@ public class singleGameActionListener implements ActionListener {
         Thread t = new Thread (game);
         t.start ();
         if(spectatableCheckBox.isSelected()) {
-            Server server = new Server(Integer.parseInt(portField.getText()), Integer.parseInt(maxClientsField.getText()));
+            Server server = new Server(game, Integer.parseInt(portField.getText()), Integer.parseInt(maxClientsField.getText()));
             new Thread(server).start();
             game.addObserver(server);
         }

@@ -1,39 +1,40 @@
 package aoop.asteroids.model.client;
 
+import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.Game;
-import aoop.asteroids.model.packet.ClientAskSpectatePacket;
-import aoop.asteroids.model.packet.ClientSpectatingPacket;
+import aoop.asteroids.model.packet.client.ClientAskSpectatePacket;
+import aoop.asteroids.model.packet.client.ClientSpectatingPacket;
 import aoop.asteroids.model.packet.GamePacket;
-import aoop.asteroids.model.packet.server.ServerSpectatingDeniedPacket;
+import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.TimeUnit;
+import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-public class Client implements Runnable {
+public class Client extends Observable implements Runnable {
     private final static int CLIENT_TIMEOUT_TIME = 5;
     private InetAddress serverAddress;
     private int serverPort;
     private AtomicBoolean connected = new AtomicBoolean(false);
     private final static Logger logger = Logger.getLogger(Client.class.getName());
     private DatagramSocket datagramSocket;
-
+    private Game currentGame;
 
     public Client(InetAddress serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
     }
 
-    private boolean enstablishConnection(InetAddress inetAddress, int port) {
+    private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
             datagramSocket = new DatagramSocket(44445);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             return false;
         }
-        if(!(new ClientAskSpectatePacket().sendEmptyPacket(datagramSocket, inetAddress, port))) {
+        if(!(new ClientAskSpectatePacket().sendPacket(datagramSocket, inetAddress, port))) {
             return false;
         }
         System.out.println("Sent packet to " + inetAddress.getHostAddress());
@@ -43,7 +44,7 @@ public class Client implements Runnable {
             logger.severe("[ERROR] Could not set the timeout for socket: " + e.getMessage());
             return false;
         }
-        byte [] bytes = new byte[1024];
+        byte [] bytes = new byte[4096];
         DatagramPacket responsePacket;
         while (true) {
             responsePacket = new DatagramPacket(bytes, bytes.length);
@@ -51,7 +52,11 @@ public class Client implements Runnable {
                 datagramSocket.receive(responsePacket);
                 ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(responsePacket.getData()));
                 GamePacket gamePacket = (GamePacket) objStream.readObject();
-                return !(gamePacket instanceof ServerSpectatingDeniedPacket);
+                objStream.close();
+                if(gamePacket instanceof ServerUpdatedGamePacket) {
+                    new AsteroidsFrame(((ServerUpdatedGamePacket) gamePacket).getNewGame(), this);
+                    return true;
+                }
             } catch (IOException | ClassNotFoundException e) {
                 logger.severe("[ERROR] Could not establish handshake with the server: " + e.getMessage());
                 return false;
@@ -62,15 +67,16 @@ public class Client implements Runnable {
     @Override
     public void run() {
         System.out.println("Trying connection with " + serverAddress.getHostAddress() + ":" + serverPort);
-        connected.set(enstablishConnection(serverAddress, serverPort));
+        connected.set(establishConnection(serverAddress, serverPort));
         if(!connected.get()) {
             datagramSocket.close();
             logger.severe("[ERROR] Could not open client datagram socket.");
+            return;
         }
-        System.out.println("HANDSHAKE");
+        logger.fine("[TRACING] Client managed to establish handshake with the server.");
         new Thread(() -> {
             while(connected.get()) {
-                new ClientSpectatingPacket().sendEmptyPacket(datagramSocket, serverAddress, serverPort);
+                new ClientSpectatingPacket().sendPacket(datagramSocket, serverAddress, serverPort);
                 try {
                     Thread.sleep(Game.getGameTickTime()*4);
                 } catch (InterruptedException e) {
@@ -78,5 +84,36 @@ public class Client implements Runnable {
                 }
             }
         }).start();
+        byte [] bytes = new byte[4096];
+        DatagramPacket responsePacket;
+        while(connected.get()) {
+            responsePacket = new DatagramPacket(bytes, bytes.length);
+            try {
+                datagramSocket.receive(responsePacket);
+                ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(responsePacket.getData()));
+                GamePacket gamePacket = (GamePacket) objStream.readObject();
+                objStream.close();
+                if(gamePacket instanceof ServerUpdatedGamePacket) {
+                    Game newGame = ((ServerUpdatedGamePacket) gamePacket).getNewGame();
+                    if(currentGame != null && !newGame.isNewer(currentGame)) {
+                        System.out.println("Received obsolete packet.");
+                        continue;
+                    }
+                    this.currentGame = newGame;
+                    setChanged();
+                    notifyObservers();
+                } else {
+                    logger.severe("Received invalid packet type.");
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                logger.severe("[ERROR] Could not translate packet: " + e.getMessage());
+            }
+
+
+        }
+    }
+
+    public Game getCurrentGame() {
+        return currentGame;
     }
 }

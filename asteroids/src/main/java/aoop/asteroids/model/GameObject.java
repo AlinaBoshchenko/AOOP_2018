@@ -1,6 +1,7 @@
 package aoop.asteroids.model;
 
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *	GameObject is the abstract superclass for all game objects. I.e. bullets, 
@@ -9,7 +10,7 @@ import java.awt.Point;
  *
  *	@author Yannick Stoffers
  */
-public abstract class GameObject 
+public abstract class GameObject implements Serializable
 {
 
 	/** Location on the X axis. */

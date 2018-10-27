@@ -4,6 +4,8 @@ import aoop.asteroids.model.Asteroid;
 import aoop.asteroids.model.Bullet;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.client.Client;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -38,16 +40,24 @@ public class AsteroidsPanel extends JPanel
 	public AsteroidsPanel (Game game)
 	{
 		this.game = game;
-		this.game.addObserver (new Observer ()
-		{
-			@Override
-			public void update (Observable o, Object arg)
-			{
-				AsteroidsPanel.this.repaint ();
-			}
+		this.game.addObserver ((o, arg) -> AsteroidsPanel.this.repaint ());
+	}
+
+
+	/**
+	 *	Constructs a new game panel, based on the model intercepted by the specified client.
+	 *
+	 *	@param client game model.
+	 */
+	public AsteroidsPanel (Game game, Client client)
+	{
+		this.game = game;
+		client.addObserver((o, arg) -> {
+			this.game = client.getCurrentGame();
+			AsteroidsPanel.this.repaint ();
 		});
 	}
-	
+
 	/**
 	 *	Method for refreshing the GUI.
 	 *

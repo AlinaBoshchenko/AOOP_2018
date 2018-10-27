@@ -1,51 +1,93 @@
 package aoop.asteroids.model.server;
 
-import aoop.asteroids.model.packet.ClientAskSpectatePacket;
-import aoop.asteroids.model.packet.ClientSpectatingPacket;
-import aoop.asteroids.model.packet.GamePacket;
-import aoop.asteroids.model.packet.server.ServerSpectatingAcceptedPacket;
-import aoop.asteroids.model.packet.server.ServerSpectatingDeniedPacket;
+import aoop.asteroids.model.Game;
+import aoop.asteroids.model.client.Client;
+import aoop.asteroids.model.packet.client.ClientGamePacket;
+import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Server implements Observer, Runnable {
+
+    /**
+     * The DataGram socket that manages the UDP connections of the server.
+     */
     private DatagramSocket datagramSocket;
+
+    /**
+     * The port on which the Server operates.
+     */
     private final int port;
+
+    /**
+     * The maximum numbers of Spectators that can be connected to the server at the same time.
+     */
     private final int maxSpectators;
+
+    /**
+     * The status of the server
+     */
     private boolean running;
+
+    /**
+     * The set of all connected clients.
+     */
     private final Set<ConnectedClient> connectedClients;
 
-    public Server(int port, int maxSpectators) {
+    /**
+     * The most recent model of the game bound to the server.
+      */
+    private Game currentGame;
+
+    /**
+     * The logger of this class
+     */
+    private final static Logger logger = Logger.getLogger(Client.class.getName());
+
+
+    /**
+     * Creates a new server bound to the currentGame.
+     * @param currentGame the game to which the server is bound
+     * @param port the port on which the server will be created
+     * @param maxSpectators the maximum number of spectators that can watch the game
+     */
+    public Server(Game currentGame, int port, int maxSpectators) {
+        this.currentGame = currentGame;
         this.port = port;
         this.maxSpectators = maxSpectators;
         connectedClients = Collections.synchronizedSet(new LinkedHashSet<>(maxSpectators));
     }
 
+    private void openDatagramSocket() {
+        try {
+            datagramSocket = new DatagramSocket(port);
+            running = true;
+        } catch (SocketException | SecurityException e) {
+            logger.severe("Failed to open server Datagram socket: " + e.getMessage());
+            running = false;
+        }
+    }
+
     @Override
     public void run() {
         running = false;
-        try {
-            //System.out.println("Started server datagram on " + port);
-            datagramSocket = new DatagramSocket(port);
-            running = true;
-        } catch (SocketException e) {
-            //TODO: Logger
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            //TODO: Logger
-            e.printStackTrace();
-        }
-
+        openDatagramSocket();
         byte bytes[] = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         while(running) {
             try {
                 datagramSocket.receive(datagramPacket);
                 ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(datagramPacket.getData()));
-                handlePacket((GamePacket) objStream.readObject(), datagramPacket.getAddress(), datagramPacket.getPort());
+                Object receivedObject = objStream.readObject();
                 objStream.close();
+                if(!(receivedObject instanceof ClientGamePacket)) {
+                    logger.severe("[SERVER] Received invalid packet from " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort() + ".");
+                    continue;
+                }
+                ((ClientGamePacket) receivedObject).handleClientPacket(this, datagramPacket.getAddress(), datagramPacket.getPort());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -53,43 +95,31 @@ public class Server implements Observer, Runnable {
         }
     }
 
-
-    private void handlePacket(GamePacket packet, InetAddress inetAddress, int port) {
-        if(packet instanceof ClientAskSpectatePacket) {
-            handleAskSpectate(inetAddress, port);
-        } else if (packet instanceof ClientSpectatingPacket) {
-            handleSpectatingPacket(inetAddress, port);
-        }
+    public Set<ConnectedClient> getConnectedClients() {
+        return connectedClients;
     }
 
-    private void handleSpectatingPacket(InetAddress from, int port) {
-        ConnectedClient client = new ConnectedClient(from, port);
-        synchronized (connectedClients) {
-            for (ConnectedClient iteratedClient : connectedClients) {
-                if (iteratedClient.equals(client)) {
-                    iteratedClient.refreshTimeoutTicks();
-                }
-            }
-        }
+    public int getMaxSpectators() {
+        return maxSpectators;
     }
 
-    private void handleAskSpectate(InetAddress from, int port) {
-        if(connectedClients.size() == maxSpectators) {
-            new ServerSpectatingDeniedPacket().sendEmptyPacket(datagramSocket, from, port);
-            return;
-        }
-        new ServerSpectatingAcceptedPacket().sendEmptyPacket(datagramSocket, from, port);
-        synchronized(connectedClients) {
-            connectedClients.add(new ConnectedClient(from, port));
-        }
-
+    public static Logger getLogger() {
+        return logger;
     }
 
+    public DatagramSocket getDatagramSocket() {
+        return datagramSocket;
+    }
 
-
+    public Game getCurrentGame() {
+        return currentGame;
+    }
 
     @Override
     public void update(Observable o, Object arg) {
+        if(!(o instanceof Game)) {
+            return;
+        }
         synchronized (connectedClients) {
             Iterator<ConnectedClient> iterator = connectedClients.iterator();
             ConnectedClient client;
@@ -98,8 +128,11 @@ public class Server implements Observer, Runnable {
                 client.decreaseTimeoutTicks();
                 if(client.isTimeouted()) {
                     iterator.remove();
-                    System.out.println("Cleared client.");
+                    logger.fine("[SERVER] " + client.getInetAddress().getHostAddress() + ":" + client.getPort() + " disconnected.");
+                    continue;
                 }
+                currentGame = (Game) o;
+                new ServerUpdatedGamePacket(currentGame).sendPacket(datagramSocket, client.getInetAddress(), client.getPort());
             }
         }
     }

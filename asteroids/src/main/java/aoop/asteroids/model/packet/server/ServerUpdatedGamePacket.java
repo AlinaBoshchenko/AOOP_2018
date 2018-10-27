@@ -1,11 +1,19 @@
 package aoop.asteroids.model.packet.server;
 
+import aoop.asteroids.model.Game;
 import aoop.asteroids.model.client.Client;
-import aoop.asteroids.model.packet.GamePacket;
 
 import java.net.InetAddress;
 
-public class ServerSpectatingDeniedPacket extends ServerGamePacket {
+public class ServerUpdatedGamePacket extends ServerGamePacket {
+    private Game newGame;
+    public  ServerUpdatedGamePacket(Game newGame) {
+        this.newGame = newGame;
+    }
+
+    public Game getNewGame() {
+        return newGame;
+    }
 
     /**
      * This method describes the actions the specified client that received this packet should do.

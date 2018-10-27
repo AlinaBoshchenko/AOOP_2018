@@ -7,17 +7,10 @@ import java.net.InetAddress;
 import java.util.logging.Logger;
 
 abstract public class GamePacket implements Serializable {
-    private byte [] contentAsByteArray;
-    private final static Logger logger = Logger.getLogger(GamePacket.class.getName());
+    transient private final static Logger logger = Logger.getLogger(GamePacket.class.getName());
 
-    /**
-     *
-     * @param from
-     * @param inetAddress
-     * @param port
-     * @return
-     */
-    public boolean sendEmptyPacket(DatagramSocket from, InetAddress inetAddress, int port) {
+    //TODO make this a new thread??
+    public boolean sendPacket(DatagramSocket from, InetAddress inetAddress, int port) {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo;
         try {
@@ -26,21 +19,20 @@ abstract public class GamePacket implements Serializable {
             oo.close();
         } catch (IOException e) {
             getLogger().severe("[ERROR] Packet sending error: " +  e.getMessage());
+            e.printStackTrace();
             return false;
         }
         byte [] serializedMessage = bStream.toByteArray();
         try {
-            DatagramPacket formatedPacket = new DatagramPacket(serializedMessage, serializedMessage.length, inetAddress, port);
-            from.send(formatedPacket);
+            DatagramPacket formattedPacket = new DatagramPacket(serializedMessage, serializedMessage.length, inetAddress, port);
+            from.send(formattedPacket);
         } catch (IOException e) {
             getLogger().severe("[ERROR] Packet sending error: " +  e.getMessage());
+            e.printStackTrace();
             return false;
         }
         return true;
     }
-
-
-    //protected abstract boolean sendPacket(DatagramSocket from, InetAddress inetAddress, int port);
 
     public static Logger getLogger() {
         return logger;

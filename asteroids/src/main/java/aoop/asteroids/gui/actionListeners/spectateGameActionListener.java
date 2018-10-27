@@ -1,5 +1,6 @@
 package aoop.asteroids.gui.actionListeners;
 
+import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.client.Client;
 
 import javax.swing.*;

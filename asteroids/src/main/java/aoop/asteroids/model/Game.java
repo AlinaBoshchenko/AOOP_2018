@@ -2,6 +2,7 @@ package aoop.asteroids.model;
 
 import aoop.asteroids.gui.Player;
 import java.awt.Point;
+import java.io.Serializable;
 import java.lang.Runnable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +39,7 @@ import java.util.Random;
  *
  *	@author Yannick Stoffers
  */
-public class Game extends Observable implements Runnable
+public class Game extends Observable implements Runnable, Serializable
 {
 
 	/** The spaceship of the player. */
@@ -51,20 +52,25 @@ public class Game extends Observable implements Runnable
 	private Collection <Asteroid> asteroids;
 
 	/** Random number generator. */
-	private static Random rng;
+	transient private static Random rng;
 
 	/** Game tick counter for spawning random asteroids. */
-	private int cycleCounter;
+	transient private int cycleCounter;
 
 	/** Asteroid limit. */
-	private int asteroidsLimit;
+	transient private int asteroidsLimit;
 
 	/**
 	 * The time between each game tick.
 	 */
 	private static final int gameTickTime = 40;
 
-	/** 
+	/**
+	 * The number of game ticks passed since the beginning of the game
+	 */
+	private long gameTickCount = 0L;
+
+	/**
 	 *	Indicates whether the a new game is about to be started. 
 	 *
 	 *	@see #run()
@@ -159,6 +165,7 @@ public class Game extends Observable implements Runnable
 
 		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
 		this.cycleCounter++;
+		this.gameTickCount++;
 		this.cycleCounter %= 200;
 
 		this.setChanged ();
@@ -325,11 +332,25 @@ public class Game extends Observable implements Runnable
 		}
 	}
 
-
 	/**
-	 * Returns the value of the game tick
+	 * Returns the time between each game tick
 	 */
 	public static int getGameTickTime() {
 		return gameTickTime;
+	}
+
+	/**
+	 * @return The number of game ticks since the start of the game
+	 */
+	public long getGameTickCount() {
+		return gameTickCount;
+	}
+
+	/**
+	 *  This game returns true if this game is newer (more game ticks elapsed since the start of the game) than the other game.
+	 *  Both objects should represent an instance of the same game for this to function correctly.
+	 */
+	public boolean isNewer(Game other) {
+		return this.getGameTickCount() > other.getGameTickCount();
 	}
 }

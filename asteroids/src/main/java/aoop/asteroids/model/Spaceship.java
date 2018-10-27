@@ -134,7 +134,7 @@ public class Spaceship extends GameObject
 	 *	turns when a turn button is pressed. The speed at which it turns is 2% 
 	 *	of a full rotation per game tick. Afterwards the spaceships velocity 
 	 *	will be updated if the player wants to accelerate. The velocity however 
-	 *	is resticted to 10 pixels per game tick in both X and Y direction. 
+	 *	is restricted to 10 pixels per game tick in both X and Y direction.
 	 *	Afterwards the location of the ship will be updated and the velocity 
 	 *	decreased to account for traction.
 	 */

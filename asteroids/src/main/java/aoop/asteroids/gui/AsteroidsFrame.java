@@ -2,6 +2,8 @@ package aoop.asteroids.gui;
 
 import aoop.asteroids.Asteroids;
 import aoop.asteroids.model.Game;
+import aoop.asteroids.model.client.Client;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
@@ -35,7 +37,7 @@ public class AsteroidsFrame extends JFrame
 	private AsteroidsPanel ap;
 
 	/** 
-	 *	Constructs a new Frame, requires a game model.
+	 *	Constructs a new Frame and binds it to a controller, requires a game model.
 	 *
 	 *	@param game game model.
 	 *	@param controller key listener that catches the users actions.
@@ -62,8 +64,32 @@ public class AsteroidsFrame extends JFrame
 		this.ap = new AsteroidsPanel (this.game);
 		this.add (this.ap);
 		this.setVisible (true);
-
 	}
+
+	/**
+	 *	Constructs a new Frame and binds it to a client.
+	 *
+	 *	@param client the client that listens to a server for the game packets
+	 */
+	public AsteroidsFrame(Game game, Client client) {
+		this.initActions();
+
+		this.setTitle("Asteroids");
+		this.setSize (800, 800);
+
+		this.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+
+		JMenuBar mb = new JMenuBar ();
+		JMenu m = new JMenu ("Game");
+		mb.add (m);
+		m.add (this.quitAction);
+		this.setJMenuBar (mb);
+
+		this.ap = new AsteroidsPanel(game, client);
+		this.add(this.ap);
+		this.setVisible(true);
+	}
+
 
 	/** Quits the old game and starts a new one. */
 	private void newGame ()

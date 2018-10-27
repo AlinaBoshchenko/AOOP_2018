@@ -6,11 +6,11 @@ import java.net.InetAddress;
 
 public class ConnectedClient {
     private final static int maxTimeoutTicks = 5*1000/Game.getGameTickTime();
-    private InetAddress inetAddress;
-    private int port;
+    private final InetAddress inetAddress;
+    private final int port;
     private int timeoutTick;
 
-    ConnectedClient(InetAddress inetAddress, int port) {
+    public ConnectedClient(InetAddress inetAddress, int port) {
         this.inetAddress = inetAddress;
         timeoutTick = maxTimeoutTicks;
         this.port = port;

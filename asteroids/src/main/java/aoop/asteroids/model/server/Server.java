@@ -33,14 +33,14 @@ public class Server implements Observer, Runnable {
     private boolean running;
 
     /**
-     * The set of all connected clients.
+     * The set of all connected spectators.
      */
-    private final Set<ConnectedClient> connectedClients;
+    private final Set<ConnectedClient> connectedSpectators;
 
     /**
      * The most recent model of the game bound to the server.
       */
-    private Game currentGame;
+    private final Game game;
 
     /**
      * The logger of this class
@@ -49,16 +49,16 @@ public class Server implements Observer, Runnable {
 
 
     /**
-     * Creates a new server bound to the currentGame.
-     * @param currentGame the game to which the server is bound
+     * Creates a new server bound to the game.
+     * @param game the game to which the server is bound
      * @param port the port on which the server will be created
      * @param maxSpectators the maximum number of spectators that can watch the game
      */
-    public Server(Game currentGame, int port, int maxSpectators) {
-        this.currentGame = currentGame;
+    public Server(Game game, int port, int maxSpectators) {
+        this.game = game;
         this.port = port;
         this.maxSpectators = maxSpectators;
-        connectedClients = Collections.synchronizedSet(new LinkedHashSet<>(maxSpectators));
+        connectedSpectators = Collections.synchronizedSet(new LinkedHashSet<>(maxSpectators));
     }
 
     private void openDatagramSocket() {
@@ -95,8 +95,8 @@ public class Server implements Observer, Runnable {
         }
     }
 
-    public Set<ConnectedClient> getConnectedClients() {
-        return connectedClients;
+    public Set<ConnectedClient> getConnectedSpectators() {
+        return connectedSpectators;
     }
 
     public int getMaxSpectators() {
@@ -111,18 +111,14 @@ public class Server implements Observer, Runnable {
         return datagramSocket;
     }
 
-    public Game getCurrentGame() {
-        return currentGame;
+    public Game getGame() {
+        return game;
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        if(!(o instanceof Game)) {
-            return;
-        }
-        currentGame = (Game) o;
-        synchronized (connectedClients) {
-            Iterator<ConnectedClient> iterator = connectedClients.iterator();
+        synchronized (connectedSpectators) {
+            Iterator<ConnectedClient> iterator = connectedSpectators.iterator();
             ConnectedClient client;
             while (iterator.hasNext()) {
                 client = iterator.next();
@@ -132,7 +128,7 @@ public class Server implements Observer, Runnable {
                     logger.fine("[SERVER] " + client.getInetAddress().getHostAddress() + ":" + client.getPort() + " disconnected.");
                     continue;
                 }
-                new ServerUpdatedGamePacket(currentGame).sendPacket(datagramSocket, client.getInetAddress(), client.getPort());
+                new ServerUpdatedGamePacket(game).sendPacket(datagramSocket, client.getInetAddress(), client.getPort());
             }
         }
     }

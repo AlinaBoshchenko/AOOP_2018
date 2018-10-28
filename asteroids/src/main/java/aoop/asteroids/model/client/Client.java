@@ -32,9 +32,11 @@ public class Client extends Observable implements Runnable {
             datagramSocket = new DatagramSocket(44445);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
+            datagramSocket.close();
             return false;
         }
         if(!(new ClientAskSpectatePacket().sendPacket(datagramSocket, inetAddress, port))) {
+            datagramSocket.close();
             return false;
         }
         System.out.println("Sent packet to " + inetAddress.getHostAddress());
@@ -42,6 +44,7 @@ public class Client extends Observable implements Runnable {
             datagramSocket.setSoTimeout(CLIENT_TIMEOUT_TIME*10000);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not set the timeout for socket: " + e.getMessage());
+            datagramSocket.close();
             return false;
         }
         byte [] bytes = new byte[4096];
@@ -96,7 +99,6 @@ public class Client extends Observable implements Runnable {
                 if(gamePacket instanceof ServerUpdatedGamePacket) {
                     Game newGame = ((ServerUpdatedGamePacket) gamePacket).getNewGame();
                     if(currentGame != null && !newGame.isNewer(currentGame)) {
-                        System.out.println("Received obsolete packet.");
                         continue;
                     }
                     this.currentGame = newGame;

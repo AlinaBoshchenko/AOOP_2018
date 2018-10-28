@@ -1,9 +1,8 @@
 package aoop.asteroids;
 
 import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.gui.Player;
+import aoop.asteroids.controller.Player;
 import aoop.asteroids.model.Game;
-import java.awt.Point;
 
 /**
  *	Main class of the Asteroids program.

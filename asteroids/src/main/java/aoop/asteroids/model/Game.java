@@ -1,6 +1,6 @@
 package aoop.asteroids.model;
 
-import aoop.asteroids.gui.Player;
+import aoop.asteroids.controller.Player;
 import java.awt.Point;
 import java.io.Serializable;
 import java.lang.Runnable;
@@ -46,41 +46,45 @@ public class Game extends Observable implements Runnable, Serializable
 	private Spaceship ship;
 
 	/** List of bullets. */
-	private Collection <Bullet> bullets;
+	protected Collection <Bullet> bullets;
 
 	/** List of asteroids. */
-	private Collection <Asteroid> asteroids;
+	protected Collection <Asteroid> asteroids;
 
 	/** Random number generator. */
-	transient private static Random rng;
+	transient protected static Random rng;
 
 	/** Game tick counter for spawning random asteroids. */
-	transient private int cycleCounter;
+	transient protected int cycleCounter;
 
 	/** Asteroid limit. */
-	transient private int asteroidsLimit;
+	transient protected int asteroidsLimit;
 
 	/**
 	 * The game message to display
 	 */
-	private String gameMessage = null;
+	protected String gameMessage = null;
 
+	/**
+	 * The number of dots after the message.
+	 */
+	private int nrDots = 0;
 	/**
 	 * The time between each game tick.
 	 */
-	private static final int gameTickTime = 40;
+	protected static final int gameTickTime = 40;
 
 	/**
 	 * The number of game ticks passed since the beginning of the game
 	 */
-	private long gameTickCount = 0L;
+	protected long gameTickCount = 0L;
 
 	/**
 	 *	Indicates whether the a new game is about to be started. 
 	 *
 	 *	@see #run()
 	 */
-	private boolean aborted;
+	protected boolean aborted;
 
 	/** Initializes a new game from scratch. */
 	public Game ()
@@ -100,6 +104,7 @@ public class Game extends Observable implements Runnable, Serializable
 		this.asteroids = new ArrayList <> ();
 		this.ship.reinit ();
 		this.gameMessage = null;
+		this.nrDots = 0;
 	}
 
 	/** 
@@ -153,7 +158,7 @@ public class Game extends Observable implements Runnable, Serializable
 	 *	game tick counter is updated and a new asteroid is spawn upon every 
 	 *	200th game tick.
 	 */
-	private void update ()
+	protected void update()
 	{
 		for (Asteroid a : this.asteroids) a.nextStep ();
 		for (Bullet b : this.bullets) b.nextStep ();
@@ -171,7 +176,6 @@ public class Game extends Observable implements Runnable, Serializable
 
 		if (this.cycleCounter == 0 && this.asteroids.size () < this.asteroidsLimit) this.addRandomAsteroid ();
 		this.cycleCounter++;
-		this.gameTickCount++;
 		this.cycleCounter %= 200;
 
 		this.setChanged ();
@@ -279,8 +283,8 @@ public class Game extends Observable implements Runnable, Serializable
 	 *	is destroyed.
 	 *
 	 *	@return true if game is over, false otherwise.
-	 */ 
-	private boolean isGameOver()
+	 */
+	protected boolean isGameOver()
 	{
 		return this.ship.isDestroyed ();
 	}
@@ -297,7 +301,7 @@ public class Game extends Observable implements Runnable, Serializable
 
 	/**
 	 *	This method allows this object to run in its own thread, making sure 
-	 *	that the same thread will not perform non essential computations for 
+	 *	that the same thread will not perform non essential computations for
 	 *	the game. The thread will not stop running until the program is quit. 
 	 *	If the game is aborted or the player died, it will wait 100 
 	 *	milliseconds before reevaluating and continuing the simulation. 
@@ -325,13 +329,14 @@ public class Game extends Observable implements Runnable, Serializable
 				executionTime -= System.currentTimeMillis ();
 				sleepTime = Math.max (0, gameTickTime + executionTime);
 			}
-			else sleepTime = 100;
-
+			else {
+				sleepTime = 100;
+				updateMessageDots();
+			}
+			this.gameTickCount++;
 			try
 			{
 				Thread.sleep (sleepTime);
-				setChanged();
-				notifyObservers();
 			}
 			catch (InterruptedException e)
 			{
@@ -340,6 +345,13 @@ public class Game extends Observable implements Runnable, Serializable
 				e.printStackTrace ();
 			}
 		}
+	}
+
+	protected void updateMessageDots() {
+		++nrDots;
+		nrDots %= 40;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -369,6 +381,11 @@ public class Game extends Observable implements Runnable, Serializable
 	 * @return the game message as string, null if there is not any.
 	 */
 	public String getGameMessage() {
-		return gameMessage;
+		if(gameMessage == null) return null;
+		StringBuilder dots = new StringBuilder(4);
+		for(int i = 0; i < nrDots/10; ++i) {
+			dots.append('.');
+		}
+		return gameMessage + dots;
 	}
 }

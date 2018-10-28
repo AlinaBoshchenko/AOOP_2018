@@ -17,8 +17,8 @@ public class ClientSpectatingPacket extends ClientGamePacket {
     @Override
     public void handleClientPacket(Server server, InetAddress clientAddress, int clientPort) {
         ConnectedClient client = new ConnectedClient(clientAddress, clientPort);
-        synchronized (server.getConnectedClients()) {
-            Set<ConnectedClient> serverConnectedClients = server.getConnectedClients();
+        synchronized (server.getConnectedSpectators()) {
+            Set<ConnectedClient> serverConnectedClients = server.getConnectedSpectators();
             for (ConnectedClient iteratedClient : serverConnectedClients) {
                 if (iteratedClient.equals(client)) {
                     iteratedClient.refreshTimeoutTicks();

@@ -1,13 +1,11 @@
 package aoop.asteroids.gui;
 
-import aoop.asteroids.Asteroids;
+import aoop.asteroids.controller.Player;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.client.Client;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

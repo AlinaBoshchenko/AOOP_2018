@@ -1,4 +1,4 @@
-package aoop.asteroids.gui;
+package aoop.asteroids.controller;
 
 import aoop.asteroids.model.Spaceship;
 import java.awt.event.KeyEvent;

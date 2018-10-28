@@ -1,5 +1,6 @@
 package aoop.asteroids.gui;
 
+import aoop.asteroids.gui.actionListeners.hostGameActionListener;
 import aoop.asteroids.gui.actionListeners.singleGameActionListener;
 import aoop.asteroids.gui.actionListeners.spectateGameActionListener;
 
@@ -15,8 +16,8 @@ public class MainMenu extends JFrame {
     private static JTextField ipField;
     private static JTextField portField;
     private static JCheckBox spectatableCheckBox;
-    private static JLabel maxClientsLabel;
-    private static JTextField maxClientsField;
+    private static JTextField maxSpectatorsField;
+    private static JTextField totalPlayersField;
     private static JButton spectateButton;
 
     MainMenu() {
@@ -48,8 +49,9 @@ public class MainMenu extends JFrame {
     }
 
     private static void addActionListeners() {
-        singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxClientsField));
+        singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField));
         spectateButton.addActionListener(new spectateGameActionListener(ipField, portField));
+        hostButton.addActionListener(new hostGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, totalPlayersField));
 
     }
 
@@ -91,11 +93,14 @@ public class MainMenu extends JFrame {
 
     private static void createMaxClientsPanel(Container pane, Dimension screenDimension) {
         JPanel maxClientsPanel = new JPanel(new FlowLayout());
-        maxClientsLabel = new JLabel("Maximum players: ");
-        maxClientsPanel.add(maxClientsLabel);
-        maxClientsField = new JTextField("2");
-        maxClientsField.setPreferredSize(new Dimension(screenDimension.width/25, nickNameField.getPreferredSize().height));
-        maxClientsPanel.add(maxClientsField);
+        maxClientsPanel.add(new JLabel("Maximum spectators: "));
+        maxSpectatorsField = new JTextField("2");
+        maxSpectatorsField.setPreferredSize(new Dimension(screenDimension.width/50, nickNameField.getPreferredSize().height));
+        maxClientsPanel.add(maxSpectatorsField);
+        maxClientsPanel.add(new JLabel("Total players: "));
+        totalPlayersField = new JTextField("3");
+        totalPlayersField.setPreferredSize(new Dimension(screenDimension.width/50, nickNameField.getPreferredSize().height));
+        maxClientsPanel.add(totalPlayersField);
         maxClientsPanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
         addRow(maxClientsPanel, pane);
     }

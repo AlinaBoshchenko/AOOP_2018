@@ -68,10 +68,10 @@ public class AsteroidsPanel extends JPanel
 		g2.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.setBackground (Color.black);
 
-		this.paintMessage(g2);
 		this.paintSpaceship (g2);
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
+		this.paintMessage(g2);
 
 		g2.setFont(getFont().deriveFont(12f));
 		g2.setColor (Color.WHITE);

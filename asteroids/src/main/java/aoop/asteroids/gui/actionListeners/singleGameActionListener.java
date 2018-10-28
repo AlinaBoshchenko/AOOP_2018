@@ -1,7 +1,7 @@
 package aoop.asteroids.gui.actionListeners;
 
 import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.gui.Player;
+import aoop.asteroids.controller.Player;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.server.Server;
 

@@ -18,15 +18,15 @@ public class ClientAskSpectatePacket extends ClientGamePacket {
      */
     @Override
     public void handleClientPacket(Server server, InetAddress clientAddress, int clientPort) {
-        Set<ConnectedClient> serverConnectedClients = server.getConnectedClients();
+        Set<ConnectedClient> serverConnectedClients = server.getConnectedSpectators();
         if(serverConnectedClients.size() == server.getMaxSpectators()) {
             new ServerSpectatingDeniedPacket().sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
             Server.getLogger().fine("[SERVER] Rejected spectating from " + clientAddress.getHostAddress() + ":" + clientPort + ". Reason: All spectators slots are occupied.");
             return;
         }
-        new ServerUpdatedGamePacket(server.getCurrentGame()).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
+        new ServerUpdatedGamePacket(server.getGame()).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
         Server.getLogger().fine("[SERVER] Sent handshake to " + clientAddress.getHostAddress() + ":" + clientPort);
-        synchronized(server.getConnectedClients()) {
+        synchronized(server.getConnectedSpectators()) {
             serverConnectedClients.add(new ConnectedClient(clientAddress, clientPort));
         }
     }

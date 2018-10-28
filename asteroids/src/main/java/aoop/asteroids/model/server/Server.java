@@ -4,6 +4,7 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.client.Client;
 import aoop.asteroids.model.packet.client.ClientGamePacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
 import java.net.*;
@@ -75,6 +76,7 @@ public class Server implements Observer, Runnable {
     public void run() {
         running = false;
         openDatagramSocket();
+        System.out.println("SERVER OPENED");
         byte bytes[] = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         while(running) {
@@ -115,8 +117,7 @@ public class Server implements Observer, Runnable {
         return game;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
+    void updateSpectators() {
         synchronized (connectedSpectators) {
             Iterator<ConnectedClient> iterator = connectedSpectators.iterator();
             ConnectedClient client;
@@ -131,5 +132,10 @@ public class Server implements Observer, Runnable {
                 new ServerUpdatedGamePacket(game).sendPacket(datagramSocket, client.getInetAddress(), client.getPort());
             }
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        updateSpectators();
     }
 }

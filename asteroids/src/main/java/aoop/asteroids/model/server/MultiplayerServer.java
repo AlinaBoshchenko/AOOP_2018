@@ -1,10 +1,10 @@
 package aoop.asteroids.model.server;
 
-import aoop.asteroids.model.Game;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import aoop.asteroids.model.MultiplayerGame;
+import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
+
+import java.util.*;
 
 public class MultiplayerServer extends Server {
 
@@ -27,10 +27,18 @@ public class MultiplayerServer extends Server {
      * @param maxSpectators the maximum number of spectators that can watch the game
      * @param playerNumber  the number of players that will play the game
      */
-    public MultiplayerServer(Game currentGame, int port, int maxSpectators, int playerNumber) {
+    public MultiplayerServer(MultiplayerGame currentGame, int port, int maxSpectators, int playerNumber) {
         super(currentGame, port, maxSpectators);
         this.playerNumber = playerNumber;
         connectedPlayers = Collections.synchronizedSet(new LinkedHashSet<>(playerNumber));
+    }
+
+    public void addNewPlayer(ConnectedClient player) {
+        synchronized (connectedPlayers) {
+            connectedPlayers.add(player);
+        }
+        ((MultiplayerGame) getGame()).addNewSpaceship(player);
+        System.out.println("ADDED NEW SPACESHIP");
     }
 
     public Set<ConnectedClient> getConnectedPlayers() {
@@ -39,5 +47,30 @@ public class MultiplayerServer extends Server {
 
     public int getPlayerNumber() {
         return playerNumber;
+    }
+
+    private void updatePlayers() {
+        synchronized (connectedPlayers) {
+            Iterator<ConnectedClient> iterator = connectedPlayers.iterator();
+            ConnectedClient client;
+            while (iterator.hasNext()) {
+                client = iterator.next();
+                client.decreaseTimeoutTicks();
+                if(client.isTimeouted()) {
+                    iterator.remove();
+                    getLogger().fine("[SERVER] " + client.getInetAddress().getHostAddress() + ":" + client.getPort() + " disconnected.");
+                    continue;
+                }
+                new ServerUpdatedGamePacket(getGame()).sendPacket(getDatagramSocket(), client.getInetAddress(), client.getPort());
+            }
+        }
+
+
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        updateSpectators();
+        updatePlayers();
     }
 }

@@ -97,6 +97,31 @@ public class Spaceship extends GameObject
 		this.score 			= 0;
 	}
 
+
+	/**
+	 * Retrieves the status of the acceleration.
+	 * @return status of the acceleration.
+	 */
+	public boolean isUp() {
+		return up;
+	}
+
+	/**
+	 * Retrieves the status of the left button.
+	 * @return status of left button.
+	 */
+	public boolean isLeft() {
+		return left;
+	}
+
+	/**
+	 * Retrieves the status of right button.
+	 * @return status of right button.
+	 */
+	public boolean isRight() {
+		return right;
+	}
+
 	/**
 	 *	Sets the isFiring field to the specified value.
 	 *

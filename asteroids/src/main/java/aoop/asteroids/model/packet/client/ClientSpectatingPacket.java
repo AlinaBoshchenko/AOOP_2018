@@ -22,6 +22,7 @@ public class ClientSpectatingPacket extends ClientGamePacket {
             for (ConnectedClient iteratedClient : serverConnectedClients) {
                 if (iteratedClient.equals(client)) {
                     iteratedClient.refreshTimeoutTicks();
+                    return;
                 }
             }
         }

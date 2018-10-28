@@ -1,6 +1,7 @@
 package aoop.asteroids.gui;
 
 import aoop.asteroids.gui.actionListeners.hostGameActionListener;
+import aoop.asteroids.gui.actionListeners.joinGameActionListener;
 import aoop.asteroids.gui.actionListeners.singleGameActionListener;
 import aoop.asteroids.gui.actionListeners.spectateGameActionListener;
 
@@ -10,7 +11,7 @@ import java.awt.*;
 public class MainMenu extends JFrame {
     final String FRAME_NAME = "Asteroids Game";
     private static JTextField nickNameField;
-    private static JButton join;
+    private static JButton joinButton;
     private static JButton singleGameButton;
     private static JButton hostButton;
     private static JTextField ipField;
@@ -52,6 +53,7 @@ public class MainMenu extends JFrame {
         singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField));
         spectateButton.addActionListener(new spectateGameActionListener(ipField, portField));
         hostButton.addActionListener(new hostGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, totalPlayersField));
+        joinButton.addActionListener(new joinGameActionListener(ipField, portField));
 
     }
 
@@ -72,8 +74,8 @@ public class MainMenu extends JFrame {
         JPanel optionsButtonsPanel = new JPanel(new FlowLayout());
         spectateButton = new JButton("Spectate");
         optionsButtonsPanel.add(spectateButton);
-        join = new JButton("Join");
-        optionsButtonsPanel.add(join);
+        joinButton = new JButton("Join");
+        optionsButtonsPanel.add(joinButton);
         hostButton = new JButton("Host");
         optionsButtonsPanel.add(hostButton);
         optionsButtonsPanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));

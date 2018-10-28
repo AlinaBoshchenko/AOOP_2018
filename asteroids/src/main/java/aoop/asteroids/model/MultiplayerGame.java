@@ -1,11 +1,13 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.model.server.ConnectedClient;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MultiplayerGame extends Game {
 
@@ -17,7 +19,7 @@ public class MultiplayerGame extends Game {
     /**
      * The map of connected clients spaceships.
      */
-    private HashMap<ConnectedClient, Spaceship> connectedSpaceships;
+    private ConcurrentHashMap<ConnectedClient, Spaceship> connectedSpaceships;
 
     /**
      * The current status of the game.
@@ -30,13 +32,31 @@ public class MultiplayerGame extends Game {
     private final static int MAX_RANDOM_ASTEROID_TRIES = 10;
 
     public MultiplayerGame(int maxPlayerNumber) {
-        connectedSpaceships = new HashMap<>(maxPlayerNumber);
+        connectedSpaceships = new ConcurrentHashMap<>(maxPlayerNumber);
         this.maxPlayerNumber = maxPlayerNumber;
         this.isGameStarted = false;
     }
 
     public void addNewSpaceship(ConnectedClient client) {
         connectedSpaceships.put(client, new Spaceship());
+        updateGameStatus();
+    }
+
+    public void updateShipCoordinates(ConnectedClient player, Spaceship abstractShip) {
+        if(connectedSpaceships.get(player) == null) {
+            return;
+        }
+        synchronized (connectedSpaceships.get(player)) {
+            Spaceship spaceship = connectedSpaceships.get(player);
+            spaceship.setUp(abstractShip.isUp());
+            spaceship.setLeft(abstractShip.isLeft());
+            spaceship.setRight(abstractShip.isRight());
+            spaceship.setIsFiring(abstractShip.isFiring());
+        }
+    }
+
+    public ConcurrentHashMap<ConnectedClient, Spaceship> getConnectedSpaceships() {
+        return connectedSpaceships;
     }
 
     @Override
@@ -78,6 +98,7 @@ public class MultiplayerGame extends Game {
         if(!isGameStarted) {
             if(connectedSpaceships.size() == maxPlayerNumber) {
                 isGameStarted = true;
+                gameMessage = null;
             }
         }
 

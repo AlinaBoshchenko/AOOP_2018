@@ -2,13 +2,14 @@ package aoop.asteroids.model.server;
 
 import aoop.asteroids.model.Game;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
-public class ConnectedClient {
+public class ConnectedClient implements Serializable {
     private final static int maxTimeoutTicks = 5*1000/Game.getGameTickTime();
     private final InetAddress inetAddress;
     private final int port;
-    private int timeoutTick;
+    transient private int timeoutTick;
 
     public ConnectedClient(InetAddress inetAddress, int port) {
         this.inetAddress = inetAddress;
@@ -48,5 +49,13 @@ public class ConnectedClient {
         }
         ConnectedClient other = (ConnectedClient) obj;
         return inetAddress.equals(other.getInetAddress()) && port == other.getPort();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 42;
+        result = 24 * result + inetAddress.hashCode();
+        result = 24 * result + port;
+        return result;
     }
 }

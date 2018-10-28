@@ -1,5 +1,6 @@
 package aoop.asteroids.model.packet.client;
 
+import aoop.asteroids.model.MultiplayerGame;
 import aoop.asteroids.model.packet.server.ServerJoiningDeniedPacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 import aoop.asteroids.model.server.ConnectedClient;
@@ -32,8 +33,6 @@ public class ClientAskJoinPacket extends ClientGamePacket {
         }
         new ServerUpdatedGamePacket(multiplayerServer.getGame()).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
         Server.getLogger().fine("[SERVER] Sent handshake to " + clientAddress.getHostAddress() + ":" + clientPort);
-        synchronized(multiplayerServer.getConnectedPlayers()) {
-            serverPlayers.add(new ConnectedClient(clientAddress, clientPort));
-        }
+        multiplayerServer.addNewPlayer(new ConnectedClient(clientAddress, clientPort));
     }
 }

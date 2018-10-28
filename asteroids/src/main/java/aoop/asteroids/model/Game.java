@@ -68,7 +68,7 @@ public class Game extends Observable implements Runnable, Serializable
 	/**
 	 * The number of dots after the message.
 	 */
-	private int nrDots = 0;
+	int nrDots = 0;
 	/**
 	 * The time between each game tick.
 	 */

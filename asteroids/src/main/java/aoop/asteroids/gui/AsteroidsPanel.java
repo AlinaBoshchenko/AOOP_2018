@@ -1,9 +1,6 @@
 package aoop.asteroids.gui;
 
-import aoop.asteroids.model.Asteroid;
-import aoop.asteroids.model.Bullet;
-import aoop.asteroids.model.Game;
-import aoop.asteroids.model.Spaceship;
+import aoop.asteroids.model.*;
 import aoop.asteroids.model.client.Client;
 
 import java.awt.*;
@@ -125,6 +122,35 @@ public class AsteroidsPanel extends JPanel
 		}
 	}
 
+	private void paintSpaceships(MultiplayerGame game, Graphics2D g) {
+		for(Spaceship s : game.getConnectedSpaceships().values()) {
+			if(s.isDestroyed()) {
+				continue;
+			}
+			Polygon p = new Polygon();
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection()) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection()) * 20));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 0.8 * Math.PI) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection() + 0.8 * Math.PI) * 20));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 1.2 * Math.PI) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection() + 1.2 * Math.PI) * 20));
+
+			g.setColor(s.getColor());
+			g.fill(p);
+			g.setColor(Color.WHITE);
+			g.draw(p);
+
+			// Spaceship accelerating -> continue, otherwise abort.
+			if (!s.isAccelerating()) return;
+
+			// Draw flame at the exhaust
+			p = new Polygon();
+			p.addPoint((int) (s.getLocation().x - Math.sin(s.getDirection()) * 25), (int) (s.getLocation().y + Math.cos(s.getDirection()) * 25));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 0.9 * Math.PI) * 15), (int) (s.getLocation().y - Math.cos(s.getDirection() + 0.9 * Math.PI) * 15));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 1.1 * Math.PI) * 15), (int) (s.getLocation().y - Math.cos(s.getDirection() + 1.1 * Math.PI) * 15));
+			g.setColor(Color.yellow);
+			g.fill(p);
+
+		}
+	}
+
 	/**
 	 *	Draws the player in the GUI as a see-through white triangle. If the 
 	 *	player is accelerating a yellow triangle is drawn as a simple
@@ -134,29 +160,33 @@ public class AsteroidsPanel extends JPanel
 	 */
 	private void paintSpaceship (Graphics2D g)
 	{
-		Spaceship s = this.game.getPlayer ();
+		if(game instanceof MultiplayerGame) {
+			paintSpaceships((MultiplayerGame) game, g);
+		} else {
+			Spaceship s = this.game.getPlayer();
 
-		// Draw body of the spaceship
-		Polygon p = new Polygon ();
-		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection ()				  ) * 20), (int)(s.getLocation ().y - Math.cos (s.getDirection ()				 ) * 20));
-		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 0.8 * Math.PI) * 20), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 0.8 * Math.PI) * 20));
-		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 1.2 * Math.PI) * 20), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 1.2 * Math.PI) * 20));
+			// Draw body of the spaceship
+			Polygon p = new Polygon();
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection()) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection()) * 20));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 0.8 * Math.PI) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection() + 0.8 * Math.PI) * 20));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 1.2 * Math.PI) * 20), (int) (s.getLocation().y - Math.cos(s.getDirection() + 1.2 * Math.PI) * 20));
 
-		g.setColor (s.getColor());
-		g.fill (p);
-		g.setColor (Color.WHITE);
-		g.draw (p);
+			g.setColor(s.getColor());
+			g.fill(p);
+			g.setColor(Color.WHITE);
+			g.draw(p);
 
-		// Spaceship accelerating -> continue, otherwise abort.
-		if (!s.isAccelerating ()) return;
+			// Spaceship accelerating -> continue, otherwise abort.
+			if (!s.isAccelerating()) return;
 
-		// Draw flame at the exhaust
-		p = new Polygon ();
-		p.addPoint ((int)(s.getLocation ().x - Math.sin (s.getDirection ()				  ) * 25), (int)(s.getLocation ().y + Math.cos (s.getDirection ()				 ) * 25));
-		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 0.9 * Math.PI) * 15), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 0.9 * Math.PI) * 15));
-		p.addPoint ((int)(s.getLocation ().x + Math.sin (s.getDirection () + 1.1 * Math.PI) * 15), (int)(s.getLocation ().y - Math.cos (s.getDirection () + 1.1 * Math.PI) * 15));
-		g.setColor(Color.yellow);
-		g.fill(p);
+			// Draw flame at the exhaust
+			p = new Polygon();
+			p.addPoint((int) (s.getLocation().x - Math.sin(s.getDirection()) * 25), (int) (s.getLocation().y + Math.cos(s.getDirection()) * 25));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 0.9 * Math.PI) * 15), (int) (s.getLocation().y - Math.cos(s.getDirection() + 0.9 * Math.PI) * 15));
+			p.addPoint((int) (s.getLocation().x + Math.sin(s.getDirection() + 1.1 * Math.PI) * 15), (int) (s.getLocation().y - Math.cos(s.getDirection() + 1.1 * Math.PI) * 15));
+			g.setColor(Color.yellow);
+			g.fill(p);
+		}
 
 	}
 

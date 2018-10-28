@@ -15,11 +15,11 @@ import java.util.logging.Logger;
 
 public class Client extends Observable implements Runnable {
     private final static int CLIENT_TIMEOUT_TIME = 5;
-    private InetAddress serverAddress;
-    private int serverPort;
-    private AtomicBoolean connected = new AtomicBoolean(false);
-    private final static Logger logger = Logger.getLogger(Client.class.getName());
-    private DatagramSocket datagramSocket;
+    InetAddress serverAddress;
+    int serverPort;
+    AtomicBoolean connected = new AtomicBoolean(false);
+    final static Logger logger = Logger.getLogger(Client.class.getName());
+    DatagramSocket datagramSocket;
     private Game currentGame;
 
     public Client(InetAddress serverAddress, int serverPort) {
@@ -29,13 +29,13 @@ public class Client extends Observable implements Runnable {
 
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
-            datagramSocket = new DatagramSocket(44445);
+            datagramSocket = new DatagramSocket();
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             datagramSocket.close();
             return false;
         }
-        if(!(new ClientAskSpectatePacket().sendPacket(datagramSocket, inetAddress, port))) {
+        if(!sendRequestPacket(inetAddress, port)) {
             datagramSocket.close();
             return false;
         }
@@ -49,23 +49,52 @@ public class Client extends Observable implements Runnable {
         }
         byte [] bytes = new byte[4096];
         DatagramPacket responsePacket;
-        while (true) {
-            responsePacket = new DatagramPacket(bytes, bytes.length);
-            try {
-                datagramSocket.receive(responsePacket);
-                ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(responsePacket.getData()));
-                GamePacket gamePacket = (GamePacket) objStream.readObject();
-                objStream.close();
-                if(gamePacket instanceof ServerUpdatedGamePacket) {
-                    new AsteroidsFrame(((ServerUpdatedGamePacket) gamePacket).getNewGame(), this);
-                    return true;
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                logger.severe("[ERROR] Could not establish handshake with the server: " + e.getMessage());
-                return false;
+        responsePacket = new DatagramPacket(bytes, bytes.length);
+        try {
+            datagramSocket.receive(responsePacket);
+            ObjectInputStream objStream = new ObjectInputStream(new ByteArrayInputStream(responsePacket.getData()));
+            GamePacket gamePacket = (GamePacket) objStream.readObject();
+            objStream.close();
+            if(gamePacket instanceof ServerUpdatedGamePacket) {
+                createClientView((ServerUpdatedGamePacket) gamePacket);
+                return true;
             }
+        } catch (IOException | ClassNotFoundException e) {
+            logger.severe("[ERROR] Could not establish handshake with the server: " + e.getMessage());
+            return false;
         }
+        return false;
     }
+
+    boolean sendRequestPacket(InetAddress inetAddress, int port) {
+        return new ClientAskSpectatePacket().sendPacket(datagramSocket, inetAddress, port);
+    }
+
+    /**
+     * Creates the client GUI after successful handshake with the server.
+     * @param gamePacket the game packet containing the game information.
+     */
+    void createClientView(ServerUpdatedGamePacket gamePacket) {
+        new AsteroidsFrame(gamePacket.getNewGame(), this);
+    }
+
+    /**
+     * Creates and runs a new thread that sends the server the required information to maintain the connection.
+     * In this case it sends an empty packet that notifies it that the client is still spectating.
+     */
+    void startClientResponseThread() {
+        new Thread(() -> {
+            while(connected.get()) {
+                new ClientSpectatingPacket().sendPacket(datagramSocket, serverAddress, serverPort);
+                try {
+                    Thread.sleep(Game.getGameTickTime()*4);
+                } catch (InterruptedException e) {
+                    logger.severe("[ERROR] Spectating connection maintaining thread interrupted: " + e.getMessage());
+                }
+            }
+        }).start();
+    }
+
 
     @Override
     public void run() {
@@ -77,16 +106,7 @@ public class Client extends Observable implements Runnable {
             return;
         }
         logger.fine("[TRACING] Client managed to establish handshake with the server.");
-        new Thread(() -> {
-            while(connected.get()) {
-                new ClientSpectatingPacket().sendPacket(datagramSocket, serverAddress, serverPort);
-                try {
-                    Thread.sleep(Game.getGameTickTime()*4);
-                } catch (InterruptedException e) {
-                    logger.severe("[ERROR] Spectating connection maintaining thread interrupted: " + e.getMessage());
-                }
-            }
-        }).start();
+        startClientResponseThread();
         byte [] bytes = new byte[4096];
         DatagramPacket responsePacket;
         while(connected.get()) {

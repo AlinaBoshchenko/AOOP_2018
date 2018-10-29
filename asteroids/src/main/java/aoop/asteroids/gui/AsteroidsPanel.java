@@ -138,7 +138,7 @@ public class AsteroidsPanel extends JPanel
 			g.draw(p);
 
 			// Spaceship accelerating -> continue, otherwise abort.
-			if (!s.isAccelerating()) return;
+			if (!s.isAccelerating()) continue;
 
 			// Draw flame at the exhaust
 			p = new Polygon();

@@ -29,7 +29,7 @@ public class Client extends Observable implements Runnable {
 
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
-            datagramSocket = new DatagramSocket();
+            datagramSocket = new DatagramSocket(44445);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             datagramSocket.close();
@@ -41,7 +41,7 @@ public class Client extends Observable implements Runnable {
         }
         System.out.println("Sent packet to " + inetAddress.getHostAddress());
         try {
-            datagramSocket.setSoTimeout(CLIENT_TIMEOUT_TIME*10000);
+            datagramSocket.setSoTimeout(CLIENT_TIMEOUT_TIME*1000);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not set the timeout for socket: " + e.getMessage());
             datagramSocket.close();

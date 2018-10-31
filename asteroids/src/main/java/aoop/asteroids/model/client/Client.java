@@ -6,6 +6,7 @@ import aoop.asteroids.model.packet.client.ClientAskSpectatePacket;
 import aoop.asteroids.model.packet.client.ClientSpectatingPacket;
 import aoop.asteroids.model.packet.GamePacket;
 import aoop.asteroids.model.packet.client.ClientSpectatorDisconnectPacket;
+import aoop.asteroids.model.packet.server.ServerGamePacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
 import java.awt.event.WindowAdapter;
@@ -32,7 +33,7 @@ public class Client extends Observable implements Runnable {
 
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
-            datagramSocket = new DatagramSocket(44446);
+            datagramSocket = new DatagramSocket(44445);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             datagramSocket.close();
@@ -61,6 +62,8 @@ public class Client extends Observable implements Runnable {
             if(gamePacket instanceof ServerUpdatedGamePacket) {
                 createClientView((ServerUpdatedGamePacket) gamePacket);
                 return true;
+            } else {
+                ((ServerGamePacket) gamePacket).handleServerPacket(this, responsePacket.getAddress(), responsePacket.getPort());
             }
         } catch (IOException | ClassNotFoundException e) {
             logger.severe("[ERROR] Could not establish handshake with the server: " + e.getMessage());

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 abstract public class GamePacket implements Serializable {
     transient private final static Logger logger = Logger.getLogger(GamePacket.class.getName());
 
-    //TODO make this a new thread??
     public boolean sendPacket(DatagramSocket from, InetAddress inetAddress, int port) {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo;

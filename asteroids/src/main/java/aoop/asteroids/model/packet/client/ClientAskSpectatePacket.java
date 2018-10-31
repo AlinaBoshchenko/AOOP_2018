@@ -20,8 +20,15 @@ public class ClientAskSpectatePacket extends ClientGamePacket {
     public void handleClientPacket(Server server, InetAddress clientAddress, int clientPort) {
         Set<ConnectedClient> serverConnectedClients = server.getConnectedSpectators();
         if(serverConnectedClients.size() == server.getMaxSpectators()) {
-            new ServerSpectatingDeniedPacket().sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
-            Server.getLogger().fine("[SERVER] Rejected spectating from " + clientAddress.getHostAddress() + ":" + clientPort + ". Reason: All spectators slots are occupied.");
+            String reason;
+            if(server.getMaxSpectators() == 0) {
+                reason = "This server does not accept spectators.";
+            } else {
+                reason = "All spectators slots are occupied.";
+            }
+
+            new ServerSpectatingDeniedPacket(reason).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
+            Server.getLogger().fine("[SERVER] Rejected spectating from " + clientAddress.getHostAddress() + ":" + clientPort + ". Reason: " + reason);
             return;
         }
         new ServerUpdatedGamePacket(server.getGame()).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);

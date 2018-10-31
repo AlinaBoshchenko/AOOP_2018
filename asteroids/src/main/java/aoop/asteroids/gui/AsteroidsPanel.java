@@ -6,8 +6,10 @@ import aoop.asteroids.model.client.Client;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.lang.Object;
+import java.util.Comparator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.PriorityQueue;
 import javax.swing.JPanel;
 
 /**
@@ -18,6 +20,16 @@ import javax.swing.JPanel;
  */
 public class AsteroidsPanel extends JPanel
 {
+
+	/**
+	 * The x where the scores start to be drawn.
+	 */
+	private final static int SCORE_X = 20;
+
+	/**
+	 * * The y where the scores start to be drawn.
+	 */
+	private final static int SCORE_Y = 20;
 
 	/** serialVersionUID */
 	public static final long serialVersionUID = 4L;
@@ -69,10 +81,34 @@ public class AsteroidsPanel extends JPanel
 		this.paintAsteroids (g2);
 		this.paintBullets (g2);
 		this.paintMessage(g2);
+		this.paintScores(g2);
 
+	}
+
+
+	/**
+	 * Draws the scores of the player/players.
+	 *
+	 * @param g2 graphics instance to use.
+	 */
+	private void paintScores(Graphics2D g2) {
 		g2.setFont(getFont().deriveFont(12f));
 		g2.setColor (Color.WHITE);
-		g2.drawString (String.valueOf (this.game.getPlayer ().getScore ()), 20, 20);
+		if(game instanceof MultiplayerGame) {
+			MultiplayerGame mpGame = (MultiplayerGame) game;
+			int rowHeight = g2.getFontMetrics().getHeight();
+			int currentRowY = SCORE_Y;
+			PriorityQueue<Spaceship> spaceshipsByScore = new PriorityQueue<>((o1, o2) -> o2.getScore() - o1.getScore());
+			spaceshipsByScore.addAll(mpGame.getConnectedSpaceships().values());
+			for(Spaceship s: spaceshipsByScore) {
+				g2.drawString(s.getNickName() + ": " + s.getScore(), SCORE_X, currentRowY);
+				currentRowY += rowHeight;
+			}
+
+		} else {
+			g2.drawString (String.valueOf (this.game.getPlayer ().getScore ()), 20, 20);
+		}
+
 	}
 
 	/**

@@ -5,8 +5,11 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.packet.client.ClientAskSpectatePacket;
 import aoop.asteroids.model.packet.client.ClientSpectatingPacket;
 import aoop.asteroids.model.packet.GamePacket;
+import aoop.asteroids.model.packet.client.ClientSpectatorDisconnectPacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 import java.util.Observable;
@@ -29,7 +32,7 @@ public class Client extends Observable implements Runnable {
 
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
-            datagramSocket = new DatagramSocket(44445);
+            datagramSocket = new DatagramSocket(44446);
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             datagramSocket.close();
@@ -75,7 +78,14 @@ public class Client extends Observable implements Runnable {
      * @param gamePacket the game packet containing the game information.
      */
     void createClientView(ServerUpdatedGamePacket gamePacket) {
-        new AsteroidsFrame(gamePacket.getNewGame(), this);
+        AsteroidsFrame frame = new AsteroidsFrame(gamePacket.getNewGame(), this);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                new ClientSpectatorDisconnectPacket().sendPacket(datagramSocket, serverAddress, serverPort);
+                System.exit(0);
+            }
+        });
     }
 
     /**

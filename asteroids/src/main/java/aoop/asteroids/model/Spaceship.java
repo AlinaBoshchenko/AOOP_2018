@@ -17,6 +17,10 @@ import java.util.Random;
  */
 public class Spaceship extends GameObject
 {
+	/**
+	 * The nickname of the player that controls the ship.
+	 */
+	private String nickName;
 
 	/** Direction the spaceship is pointed in. */
 	private double direction;
@@ -42,9 +46,16 @@ public class Spaceship extends GameObject
 	private Color color;
 
 	/** Constructs a new spaceship with default values. */
-	public Spaceship ()
+	public Spaceship (String nickName)
 	{
-		this (new Point (400, 400), 0, 0, 15, 0, false, 0, null);
+		this (new Point (400, 400), 0, 0, 15, 0, false, 0, null, nickName);
+	}
+
+	/**
+	 * Constructs a new spaceship with the specified nickName and color
+	 */
+	public Spaceship(String nickName, Color color) {
+		this(new Point (400, 400), 0, 0, 15, 0, false, 0, color, nickName);
 	}
 
 	/**
@@ -61,7 +72,7 @@ public class Spaceship extends GameObject
 	 *	@param up indicator for accelarating button.
 	 *	@param score score.
 	 */
-	private Spaceship (Point location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, Color color)
+	private Spaceship (Point location, double velocityX, double velocityY, int radius, double direction, boolean up, int score, Color color, String nickName)
 	{
 		super (location, velocityX, velocityY, radius);
 		this.direction 		= direction;
@@ -76,6 +87,7 @@ public class Spaceship extends GameObject
 			color = new Color(random.nextFloat(), random.nextFloat(), random.nextFloat());
 		}
 		this.color = color;
+		this.nickName = nickName;
 	}
 
 	/** 
@@ -94,7 +106,10 @@ public class Spaceship extends GameObject
 		this.right 			= false;
 		this.destroyed		= false;
 		this.stepsTilFire 	= 0;
-		this.score 			= 0;
+	}
+
+	public void resetScore() {
+		this.score = 0;
 	}
 
 
@@ -206,7 +221,7 @@ public class Spaceship extends GameObject
 	 */
 	public Spaceship clone ()
 	{
-		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.color);
+		return new Spaceship (this.getLocation (), this.velocityX, this.velocityY, this.radius, this.direction, this.up, this.score, this.color, this.nickName);
 	}
 
 
@@ -273,5 +288,12 @@ public class Spaceship extends GameObject
 	{
 		return this.score;
 	}
-	
+
+	/**
+	 * Returns the nickname of the player that controls this ship.
+	 * @return the nickname.
+	 */
+	public String getNickName() {
+		return nickName;
+	}
 }

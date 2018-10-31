@@ -16,13 +16,15 @@ public class hostGameActionListener implements ActionListener {
     private JTextField portField;
     private JTextField maxSpectatorsField;
     private JTextField totalPlayersField;
+    private JColorChooser colorChooser;
 
-    public hostGameActionListener(JTextField nickNameField, JCheckBox spectatableCheckBox, JTextField portField, JTextField maxSpectatorsField, JTextField totalPlayersField) {
+    public hostGameActionListener(JTextField nickNameField, JCheckBox spectatableCheckBox, JTextField portField, JTextField maxSpectatorsField, JTextField totalPlayersField, JColorChooser colorChooser) {
         this.nickNameField = nickNameField;
         this.spectatableCheckBox = spectatableCheckBox;
         this.portField = portField;
         this.maxSpectatorsField = maxSpectatorsField;
         this.totalPlayersField = totalPlayersField;
+        this.colorChooser = colorChooser;
     }
 
     @Override
@@ -38,11 +40,12 @@ public class hostGameActionListener implements ActionListener {
         } catch (InterruptedException e1) {
             e1.printStackTrace();
         }
-        ClientPlayer client = null;
+        ClientPlayer client;
         try {
-            client = new ClientPlayer(InetAddress.getLocalHost(), Integer.parseInt(portField.getText()));
+            client = new ClientPlayer(InetAddress.getLocalHost(), Integer.parseInt(portField.getText()), nickNameField.getText(), colorChooser.getColor());
         } catch (UnknownHostException e1) {
             e1.printStackTrace();
+            return;
         }
         new Thread(client).start();
     }

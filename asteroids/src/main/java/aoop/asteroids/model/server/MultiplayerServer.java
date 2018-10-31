@@ -4,6 +4,7 @@ package aoop.asteroids.model.server;
 import aoop.asteroids.model.MultiplayerGame;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
+import java.awt.*;
 import java.util.*;
 
 public class MultiplayerServer extends Server {
@@ -33,12 +34,12 @@ public class MultiplayerServer extends Server {
         connectedPlayers = Collections.synchronizedSet(new LinkedHashSet<>(playerNumber));
     }
 
-    public void addNewPlayer(ConnectedClient player) {
+    public void addNewPlayer(ConnectedClient player, String nickName, Color color) {
         synchronized (connectedPlayers) {
             connectedPlayers.add(player);
         }
-        ((MultiplayerGame) getGame()).addNewSpaceship(player);
-        System.out.println("ADDED NEW SPACESHIP");
+        ((MultiplayerGame) getGame()).addNewSpaceship(player, nickName, color);
+        getLogger().fine(player.getInetAddress().getHostAddress() + ":" + player.getPort() + " has joined the game with nickname " + nickName);
     }
 
     public Set<ConnectedClient> getConnectedPlayers() {
@@ -59,13 +60,13 @@ public class MultiplayerServer extends Server {
                 if(client.isTimeouted()) {
                     iterator.remove();
                     getLogger().fine("[SERVER] " + client.getInetAddress().getHostAddress() + ":" + client.getPort() + " disconnected.");
+                    MultiplayerGame mpGame = (MultiplayerGame) getGame();
+                    mpGame.removePlayer(client);
                     continue;
                 }
                 new ServerUpdatedGamePacket(getGame()).sendPacket(getDatagramSocket(), client.getInetAddress(), client.getPort());
             }
         }
-
-
     }
 
     @Override

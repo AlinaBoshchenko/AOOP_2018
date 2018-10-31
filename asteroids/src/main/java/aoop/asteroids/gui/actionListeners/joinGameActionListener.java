@@ -12,16 +12,20 @@ public class joinGameActionListener implements ActionListener {
 
     private JTextField ipField;
     private JTextField portField;
+    private JTextField nickNameField;
+    private JColorChooser colorChooser;
 
-    public joinGameActionListener(JTextField ipField, JTextField portField) {
+    public joinGameActionListener(JTextField ipField, JTextField portField, JTextField nickNameField, JColorChooser colorChooser) {
         this.ipField = ipField;
         this.portField = portField;
+        this.nickNameField = nickNameField;
+        this.colorChooser = colorChooser;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            ClientPlayer client = new ClientPlayer(InetAddress.getByName(ipField.getText()), Integer.parseInt(portField.getText()));
+            ClientPlayer client = new ClientPlayer(InetAddress.getByName(ipField.getText()), Integer.parseInt(portField.getText()), nickNameField.getText(), colorChooser.getColor());
             new Thread(client).start();
         } catch (UnknownHostException e1) {
             e1.printStackTrace();

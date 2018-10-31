@@ -1,7 +1,8 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.controller.Player;
-import java.awt.Point;
+
+import java.awt.*;
 import java.io.Serializable;
 import java.lang.Runnable;
 import java.util.ArrayList;
@@ -87,10 +88,10 @@ public class Game extends Observable implements Runnable, Serializable
 	protected boolean aborted;
 
 	/** Initializes a new game from scratch. */
-	public Game ()
+	public Game (Color spaceShipColor)
 	{
 		Game.rng = new Random ();
-		this.ship = new Spaceship ();
+		this.ship = new Spaceship ("Player", spaceShipColor);
 		this.initGameData ();
 	}
 
@@ -103,6 +104,7 @@ public class Game extends Observable implements Runnable, Serializable
 		this.bullets = new ArrayList <> ();
 		this.asteroids = new ArrayList <> ();
 		this.ship.reinit ();
+		this.ship.resetScore();
 		this.gameMessage = null;
 		this.nrDots = 0;
 	}
@@ -346,6 +348,7 @@ public class Game extends Observable implements Runnable, Serializable
 			}
 		}
 	}
+
 
 	protected void updateMessageDots() {
 		++nrDots;

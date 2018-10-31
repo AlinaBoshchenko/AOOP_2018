@@ -1,15 +1,18 @@
 package aoop.asteroids.model;
 
 import aoop.asteroids.model.server.ConnectedClient;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MultiplayerGame extends Game {
+
+    private final int MAX_COUNTDOWN_SECONDS = 4;
+
+    private int countdownTicks;
+
 
     /**
      * The maximum number of total players.
@@ -32,13 +35,16 @@ public class MultiplayerGame extends Game {
     private final static int MAX_RANDOM_ASTEROID_TRIES = 10;
 
     public MultiplayerGame(int maxPlayerNumber) {
+        super(null);
         connectedSpaceships = new ConcurrentHashMap<>(maxPlayerNumber);
         this.maxPlayerNumber = maxPlayerNumber;
         this.isGameStarted = false;
     }
 
-    public void addNewSpaceship(ConnectedClient client) {
-        connectedSpaceships.put(client, new Spaceship());
+    public void addNewSpaceship(ConnectedClient client, String nickName, Color color) {
+        Spaceship newSpaceship = new Spaceship(nickName, color);
+        newSpaceship.destroy();
+        connectedSpaceships.put(client, newSpaceship);
         updateGameStatus();
     }
 
@@ -71,9 +77,8 @@ public class MultiplayerGame extends Game {
             s.nextStep();
             if (s.isFiring ())
             {
-                //TODO: add bullet origin
                 double direction = s.getDirection ();
-                this.bullets.add (new Bullet(s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));
+                this.bullets.add (new MultiplayerBullet(s, s.getLocation (), s.getVelocityX () + Math.sin (direction) * 15, s.getVelocityY () - Math.cos (direction) * 15));
                 s.setFired ();
             }
         }
@@ -91,21 +96,36 @@ public class MultiplayerGame extends Game {
 
     private void updateGameStatus() {
         if(isGameStarted) {
-            if(connectedSpaceships.values().stream().allMatch(Spaceship::isDestroyed)) {
+            int cnt = 0;
+            for(Spaceship spaceship : connectedSpaceships.values()) {
+                if(!spaceship.isDestroyed()) {
+                    if(++cnt > 1) {
+                        break;
+                    }
+                }
+            }
+            if(cnt <= 1) {
+                initGameData();
                 isGameStarted = false;
             }
         }
         if(!isGameStarted) {
             if(connectedSpaceships.size() == maxPlayerNumber) {
+                for(Spaceship s : connectedSpaceships.values()) {
+                    s.reinit();
+                }
                 isGameStarted = true;
-                gameMessage = null;
+                countdownTicks = MAX_COUNTDOWN_SECONDS*(1000/gameTickTime);
             }
         }
 
     }
 
+
+
     private void checkCollisions ()
     {
+        bulletLoop:
         for (Bullet b : this.bullets)
         {
             for (Asteroid a : this.asteroids)
@@ -114,6 +134,7 @@ public class MultiplayerGame extends Game {
                 {
                     b.destroy ();
                     a.destroy ();
+                    continue bulletLoop;
                 }
             }
 
@@ -123,9 +144,14 @@ public class MultiplayerGame extends Game {
                 }
                 if (b.collides (s))
                 {
+                    if(b instanceof MultiplayerBullet) {
+                        ((MultiplayerBullet) b).getShooter().increaseScore();
+                        System.out.println("SCORE: " + ((MultiplayerBullet) b).getShooter().getScore());
+                    }
                     b.destroy ();
                     s.destroy ();
                     updateGameStatus();
+                    continue bulletLoop;
                 }
             }
         }
@@ -164,6 +190,11 @@ public class MultiplayerGame extends Game {
         Collection <Bullet> newBuls = new ArrayList <> ();
         for (Bullet b : this.bullets) if (!b.isDestroyed ()) newBuls.add (b);
         this.bullets = newBuls;
+    }
+
+    public void removePlayer(ConnectedClient player) {
+        connectedSpaceships.remove(player);
+        updateGameStatus();
     }
 
     private void addRandomAsteroid ()
@@ -207,12 +238,24 @@ public class MultiplayerGame extends Game {
         long executionTime, sleepTime;
         while (true)
         {
-            if (this.isGameStarted && !this.aborted)
+            if (this.isGameStarted)
             {
-                executionTime = System.currentTimeMillis ();
-                this.update ();
-                executionTime -= System.currentTimeMillis ();
-                sleepTime = Math.max (0, gameTickTime + executionTime);
+                if(countdownTicks > 0) {
+                    int countdownSeconds = (countdownTicks--)/(1000/gameTickTime);
+                    nrDots = 0;
+                    gameMessage = (countdownSeconds == 0) ? "FIGHT!" : Integer.toString(countdownSeconds);
+                    if(countdownTicks == 0) {
+                        gameMessage = null;
+                    }
+                    setChanged();
+                    notifyObservers();
+                    sleepTime = gameTickTime;
+                } else {
+                    executionTime = System.currentTimeMillis();
+                    this.update();
+                    executionTime -= System.currentTimeMillis();
+                    sleepTime = Math.max(0, gameTickTime + executionTime);
+                }
             }
             else{
                 gameMessage = "Waiting for players: " + connectedSpaceships.size() + "/" + maxPlayerNumber;

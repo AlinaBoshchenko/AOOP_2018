@@ -15,12 +15,14 @@ public class singleGameActionListener implements ActionListener {
     private JCheckBox spectatableCheckBox;
     private JTextField portField;
     private JTextField maxClientsField;
+    private JColorChooser colorChooser;
 
-    public singleGameActionListener(JTextField nickNameField, JCheckBox spectatableCheckBox, JTextField portField, JTextField maxClientsField) {
+    public singleGameActionListener(JTextField nickNameField, JCheckBox spectatableCheckBox, JTextField portField, JTextField maxClientsField, JColorChooser colorChooser) {
         this.nickNameField = nickNameField;
         this.spectatableCheckBox = spectatableCheckBox;
         this.portField = portField;
         this.maxClientsField = maxClientsField;
+        this.colorChooser = colorChooser;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class singleGameActionListener implements ActionListener {
             System.setProperty ("apple.laf.useScreenMenuBar", "true");
         }
         Player player = new Player ();
-        Game game = new Game ();
+        Game game = new Game (colorChooser.getColor());
         game.linkController (player);
         AsteroidsFrame frame = new AsteroidsFrame (game, player);
         Thread t = new Thread (game);

@@ -20,7 +20,7 @@ public class Asteroids
 	public Asteroids ()
 	{
 		Player player = new Player ();
-		Game game = new Game ();
+		Game game = new Game (null);
 		game.linkController (player);
 		AsteroidsFrame frame = new AsteroidsFrame (game, player);
 		Thread t = new Thread (game);

@@ -4,34 +4,48 @@ import aoop.asteroids.controller.Player;
 import aoop.asteroids.gui.AsteroidsFrame;
 import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
-import aoop.asteroids.model.packet.client.ClientAskJoinPacket;
-import aoop.asteroids.model.packet.client.ClientAskSpectatePacket;
-import aoop.asteroids.model.packet.client.ClientPlayingPacket;
-import aoop.asteroids.model.packet.client.ClientSpectatingPacket;
+import aoop.asteroids.model.packet.client.*;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.InetAddress;
 
 public class ClientPlayer extends Client{
 
     private Spaceship abstractShip;
 
-    public ClientPlayer(InetAddress serverAddress, int serverPort) {
+    private String nickName;
+
+    private Color color;
+
+    public ClientPlayer(InetAddress serverAddress, int serverPort, String nickName, Color color) {
         super(serverAddress, serverPort);
+        this.nickName = nickName;
+        this.color = color;
     }
 
 
     @Override
     boolean sendRequestPacket(InetAddress inetAddress, int port) {
-        return new ClientAskJoinPacket().sendPacket(datagramSocket, inetAddress, port);
+        return new ClientAskJoinPacket(nickName, color).sendPacket(datagramSocket, inetAddress, port);
     }
 
     @Override
     void createClientView(ServerUpdatedGamePacket gamePacket) {
-        abstractShip = new Spaceship();
+        abstractShip = new Spaceship("");
         Player player = new Player();
         player.addShip(abstractShip);
-        new AsteroidsFrame(gamePacket.getNewGame(), this, player);
+        AsteroidsFrame frame = new AsteroidsFrame(gamePacket.getNewGame(), this, player);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                new ClientPlayerDisconnectPacket().sendPacket(datagramSocket, serverAddress, serverPort);
+                System.exit(0);
+            }
+        });
     }
 
     @Override

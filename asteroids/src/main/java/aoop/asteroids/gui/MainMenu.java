@@ -6,6 +6,8 @@ import aoop.asteroids.gui.actionListeners.singleGameActionListener;
 import aoop.asteroids.gui.actionListeners.spectateGameActionListener;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 public class MainMenu extends JFrame {
@@ -20,13 +22,14 @@ public class MainMenu extends JFrame {
     private static JTextField maxSpectatorsField;
     private static JTextField totalPlayersField;
     private static JButton spectateButton;
+    private static JColorChooser colorChooser;
 
     MainMenu() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(d.width/3, d.height/5));
+        this.setPreferredSize(new Dimension(d.width/3, d.height*3/5));
         addComponentsToPane(this.getContentPane(), d);
         addActionListeners();
 
@@ -47,13 +50,72 @@ public class MainMenu extends JFrame {
         createMaxClientsPanel(pane, screenDimension);
         createOptionsPanel(pane, screenDimension);
         createHostPanel(pane, screenDimension);
+        createColorChooser(pane, screenDimension);
     }
 
+
     private static void addActionListeners() {
-        singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField));
+        singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, colorChooser));
         spectateButton.addActionListener(new spectateGameActionListener(ipField, portField));
-        hostButton.addActionListener(new hostGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, totalPlayersField));
-        joinButton.addActionListener(new joinGameActionListener(ipField, portField));
+        hostButton.addActionListener(new hostGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, totalPlayersField, colorChooser));
+        joinButton.addActionListener(new joinGameActionListener(ipField, portField, nickNameField, colorChooser));
+
+    }
+
+    private static class PreviewPanel extends JPanel{
+        private Color color;
+        private final static int START_X = 130;
+        PreviewPanel(Color color) {
+            super();
+            setSize(400, 400);
+            setMinimumSize(new Dimension(400, 400));
+            setPreferredSize(new Dimension(400, 400));
+            setMaximumSize(new Dimension(400, 400));
+
+            this.color = color;
+        }
+        @Override
+        public void paintComponent (Graphics g)
+        {
+            super.paintComponent (g);
+            if(color == null) {
+                return;
+            }
+            Graphics2D g2 = (Graphics2D) g;
+
+
+            Polygon p = new Polygon();
+            p.addPoint(START_X, 90);
+            p.addPoint(START_X+50, 0);
+            p.addPoint(START_X+100, 90);
+            g2.setColor(color);
+            g2.fill(p);
+            g2.setColor(Color.WHITE);
+            g2.draw(p);
+
+            p = new Polygon();
+            p.addPoint(START_X+40, 90);
+            p.addPoint(START_X+60, 90);
+            p.addPoint(START_X+50, 100);
+            g2.setColor(Color.yellow);
+            g2.fill(p);
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+        }
+    }
+
+    private static void createColorChooser(Container pane, Dimension screenDimension) {
+        colorChooser = new JColorChooser();
+        PreviewPanel previewPanel = new PreviewPanel(colorChooser.getColor());
+        colorChooser.getSelectionModel().addChangeListener(e -> {
+            previewPanel.setColor(colorChooser.getColor());
+            previewPanel.repaint();
+        });
+        colorChooser.setPreviewPanel(previewPanel);
+        addRow(colorChooser, pane);
+
 
     }
 
@@ -79,7 +141,6 @@ public class MainMenu extends JFrame {
         hostButton = new JButton("Host");
         optionsButtonsPanel.add(hostButton);
         optionsButtonsPanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
-
         addRow(optionsButtonsPanel, pane);
     }
 

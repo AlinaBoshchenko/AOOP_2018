@@ -1,16 +1,30 @@
 package aoop.asteroids.model.packet.client;
 
-import aoop.asteroids.model.MultiplayerGame;
 import aoop.asteroids.model.packet.server.ServerJoiningDeniedPacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
 import aoop.asteroids.model.server.ConnectedClient;
 import aoop.asteroids.model.server.MultiplayerServer;
 import aoop.asteroids.model.server.Server;
 
+import java.awt.*;
 import java.net.InetAddress;
 import java.util.Set;
 
 public class ClientAskJoinPacket extends ClientGamePacket {
+    /**
+     * The nick name client wants to take.
+     */
+    private String nickName;
+
+    /**
+     * The desired color of the ship.
+     */
+    private Color color;
+
+    public ClientAskJoinPacket(String nickName, Color color) {
+        this.nickName = nickName;
+        this.color = color;
+    }
     /**
      * This method describes the actions the specified server that received this packet should do.
      *
@@ -31,8 +45,9 @@ public class ClientAskJoinPacket extends ClientGamePacket {
             Server.getLogger().fine("[SERVER] Rejected joining from " + clientAddress.getHostAddress() + ":" + clientPort + ". Reason: All player slots are occupied.");
             return;
         }
+        //Todo: test if nickname is unique
         new ServerUpdatedGamePacket(multiplayerServer.getGame()).sendPacket(server.getDatagramSocket(), clientAddress, clientPort);
         Server.getLogger().fine("[SERVER] Sent handshake to " + clientAddress.getHostAddress() + ":" + clientPort);
-        multiplayerServer.addNewPlayer(new ConnectedClient(clientAddress, clientPort));
+        multiplayerServer.addNewPlayer(new ConnectedClient(clientAddress, clientPort), nickName, color);
     }
 }

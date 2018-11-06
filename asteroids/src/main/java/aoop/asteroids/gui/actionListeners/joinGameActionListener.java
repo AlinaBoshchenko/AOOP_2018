@@ -23,7 +23,9 @@ public class joinGameActionListener implements ActionListener {
         this.nickNameField = nickNameField;
         this.colorChooser = colorChooser;
     }
-
+/**
+ * performs action of joining game
+ */
     @Override
     public void actionPerformed(ActionEvent e) {
         try {

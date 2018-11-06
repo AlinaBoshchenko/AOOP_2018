@@ -17,6 +17,9 @@ import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
+/**
+ * class responsible for the representation of the Client (Player)
+ */
 public class Client extends Observable implements Runnable {
     private final static int CLIENT_TIMEOUT_TIME = 5;
     InetAddress serverAddress;
@@ -31,6 +34,9 @@ public class Client extends Observable implements Runnable {
         this.serverPort = serverPort;
     }
 
+    /**
+     * establishes connection
+     */
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
             datagramSocket = new DatagramSocket();

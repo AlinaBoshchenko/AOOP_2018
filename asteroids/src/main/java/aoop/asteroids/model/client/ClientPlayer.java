@@ -13,6 +13,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.InetAddress;
 
+/**
+ * class holds information about CLient and represents it
+ */
 public class ClientPlayer extends Client{
 
     private Spaceship abstractShip;
@@ -27,12 +30,18 @@ public class ClientPlayer extends Client{
         this.color = color;
     }
 
-
+    /**
+     * sends packet of request
+     */
     @Override
     boolean sendRequestPacket(InetAddress inetAddress, int port) {
         return new ClientAskJoinPacket(nickName, color).sendPacket(datagramSocket, inetAddress, port);
     }
 
+    /**
+     * creates client's view
+     * @param gamePacket the game packet containing the game information.
+     */
     @Override
     void createClientView(ServerUpdatedGamePacket gamePacket) {
         abstractShip = new Spaceship("");
@@ -48,6 +57,9 @@ public class ClientPlayer extends Client{
         });
     }
 
+    /**
+     * starts client's response thread
+     */
     @Override
     void startClientResponseThread() {
         new Thread(() -> {

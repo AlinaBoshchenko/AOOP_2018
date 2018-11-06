@@ -21,6 +21,9 @@ public class spectateGameActionListener implements ActionListener {
         this.portField = portField;
     }
 
+    /**
+     * performs action of launching a game spectating
+     */
 
     @Override
     public void actionPerformed(ActionEvent e) {

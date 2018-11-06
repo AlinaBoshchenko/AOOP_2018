@@ -43,8 +43,6 @@ public class MainMenu extends JFrame {
 
     /**
      * adds row in menu
-     * @param jComponent
-     * @param container
      */
     private static void addRow(JComponent jComponent, Container container) {
         jComponent.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -53,8 +51,6 @@ public class MainMenu extends JFrame {
 
     /**
      * adds components of the menu
-     * @param pane
-     * @param screenDimension
      */
     private static void addComponentsToPane(Container pane, Dimension screenDimension) {
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
@@ -126,8 +122,6 @@ public class MainMenu extends JFrame {
 
     /**
      * creates a panel for the color chose
-     * @param pane
-     * @param screenDimension
      */
     private static void createColorChooser(Container pane, Dimension screenDimension) {
         colorChooser = new JColorChooser();
@@ -143,8 +137,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * @param pane
-     * @param screenDimension
+     * creates a host panel
      */
     private static void createHostPanel(Container pane, Dimension screenDimension) {
         JPanel hostPanel = new JPanel(new FlowLayout());
@@ -160,8 +153,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * @param pane
-     * @param screenDimension
+     * creates optional panel
      */
     private static void createOptionsPanel(Container pane, Dimension screenDimension) {
         JPanel optionsButtonsPanel = new JPanel(new FlowLayout());
@@ -177,8 +169,6 @@ public class MainMenu extends JFrame {
 
     /**
      * creates single game panel
-     * @param pane
-     * @param screenDimension
      */
     private static void createSingleGamePanel(Container pane, Dimension screenDimension) {
         JPanel singleGamePanel = new JPanel(new FlowLayout());
@@ -192,8 +182,6 @@ public class MainMenu extends JFrame {
 
     /**
      * creates max players panel
-     * @param pane
-     * @param screenDimension
      */
     private static void createMaxClientsPanel(Container pane, Dimension screenDimension) {
         JPanel maxClientsPanel = new JPanel(new FlowLayout());
@@ -211,8 +199,6 @@ public class MainMenu extends JFrame {
 
     /**
      * creates nickname input panel
-     * @param pane
-     * @param screenDimension
      */
     private static void createNickNamePanel(Container pane, Dimension screenDimension) {
         JPanel nickNamePanel = new JPanel(new FlowLayout());

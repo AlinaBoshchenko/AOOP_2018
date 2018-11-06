@@ -1,4 +1,4 @@
-package aoop.asteroids.database;
+package aoop.asteroids.Database;
 
 
 import java.io.Serializable;

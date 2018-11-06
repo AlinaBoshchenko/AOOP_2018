@@ -10,6 +10,9 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+/**
+ * class responsible for hosting a game action listener
+ */
 public class hostGameActionListener implements ActionListener {
     private JTextField nickNameField;
     private JCheckBox spectatableCheckBox;
@@ -27,6 +30,9 @@ public class hostGameActionListener implements ActionListener {
         this.colorChooser = colorChooser;
     }
 
+    /**
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         int playerNumber = Integer.parseInt(totalPlayersField.getText());

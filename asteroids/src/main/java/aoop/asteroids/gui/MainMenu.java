@@ -10,6 +10,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 
+/**
+ * Class responsible for creation of the main menu window
+ */
 public class MainMenu extends JFrame {
     final String FRAME_NAME = "Asteroids Game";
     private static JTextField nickNameField;
@@ -38,11 +41,21 @@ public class MainMenu extends JFrame {
 
     }
 
+    /**
+     * adds row in menu
+     * @param jComponent
+     * @param container
+     */
     private static void addRow(JComponent jComponent, Container container) {
         jComponent.setAlignmentX(Component.CENTER_ALIGNMENT);
         container.add(jComponent);
     }
 
+    /**
+     * adds components of the menu
+     * @param pane
+     * @param screenDimension
+     */
     private static void addComponentsToPane(Container pane, Dimension screenDimension) {
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         createNickNamePanel(pane, screenDimension);
@@ -53,7 +66,9 @@ public class MainMenu extends JFrame {
         createColorChooser(pane, screenDimension);
     }
 
-
+    /**
+     * adds action listeners to connect with game states
+     */
     private static void addActionListeners() {
         singleGameButton.addActionListener(new singleGameActionListener(nickNameField, spectatableCheckBox, portField, maxSpectatorsField, colorChooser));
         spectateButton.addActionListener(new spectateGameActionListener(ipField, portField));
@@ -62,6 +77,9 @@ public class MainMenu extends JFrame {
 
     }
 
+    /**
+     * graphical interpretation of the menu
+     */
     private static class PreviewPanel extends JPanel{
         private Color color;
         private final static int START_X = 130;
@@ -106,6 +124,11 @@ public class MainMenu extends JFrame {
         }
     }
 
+    /**
+     * creates a panel for the color chose
+     * @param pane
+     * @param screenDimension
+     */
     private static void createColorChooser(Container pane, Dimension screenDimension) {
         colorChooser = new JColorChooser();
         PreviewPanel previewPanel = new PreviewPanel(colorChooser.getColor());
@@ -119,6 +142,10 @@ public class MainMenu extends JFrame {
 
     }
 
+    /**
+     * @param pane
+     * @param screenDimension
+     */
     private static void createHostPanel(Container pane, Dimension screenDimension) {
         JPanel hostPanel = new JPanel(new FlowLayout());
         hostPanel.add(new JLabel("ip: "));
@@ -132,6 +159,10 @@ public class MainMenu extends JFrame {
         addRow(hostPanel, pane);
     }
 
+    /**
+     * @param pane
+     * @param screenDimension
+     */
     private static void createOptionsPanel(Container pane, Dimension screenDimension) {
         JPanel optionsButtonsPanel = new JPanel(new FlowLayout());
         spectateButton = new JButton("Spectate");
@@ -144,6 +175,11 @@ public class MainMenu extends JFrame {
         addRow(optionsButtonsPanel, pane);
     }
 
+    /**
+     * creates single game panel
+     * @param pane
+     * @param screenDimension
+     */
     private static void createSingleGamePanel(Container pane, Dimension screenDimension) {
         JPanel singleGamePanel = new JPanel(new FlowLayout());
         singleGameButton = new JButton("Start single game");
@@ -154,6 +190,11 @@ public class MainMenu extends JFrame {
         addRow(singleGamePanel, pane);
     }
 
+    /**
+     * creates max players panel
+     * @param pane
+     * @param screenDimension
+     */
     private static void createMaxClientsPanel(Container pane, Dimension screenDimension) {
         JPanel maxClientsPanel = new JPanel(new FlowLayout());
         maxClientsPanel.add(new JLabel("Maximum spectators: "));
@@ -168,6 +209,11 @@ public class MainMenu extends JFrame {
         addRow(maxClientsPanel, pane);
     }
 
+    /**
+     * creates nickname input panel
+     * @param pane
+     * @param screenDimension
+     */
     private static void createNickNamePanel(Container pane, Dimension screenDimension) {
         JPanel nickNamePanel = new JPanel(new FlowLayout());
         nickNamePanel.add(new JLabel("Nickname: "));

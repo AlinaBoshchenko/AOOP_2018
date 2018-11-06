@@ -9,7 +9,9 @@ import aoop.asteroids.model.server.Server;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+/**
+ * class responsible for single game action listener
+ */
 public class singleGameActionListener implements ActionListener {
     private JTextField nickNameField;
     private JCheckBox spectatableCheckBox;

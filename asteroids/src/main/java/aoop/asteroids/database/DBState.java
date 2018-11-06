@@ -1,8 +1,7 @@
-package aoop.asteroids.database;
+package aoop.asteroids.Database;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-
 public class DBState  {
 
     /** The x and y coordinate of the drawing to the screen */

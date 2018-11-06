@@ -33,7 +33,7 @@ public class Client extends Observable implements Runnable {
 
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {
-            datagramSocket = new DatagramSocket(44445);
+            datagramSocket = new DatagramSocket();
         } catch (SocketException e) {
             logger.severe("[ERROR] Could not create the datagram socket: " + e.getMessage());
             datagramSocket.close();
@@ -93,7 +93,7 @@ public class Client extends Observable implements Runnable {
 
     /**
      * Creates and runs a new thread that sends the server the required information to maintain the connection.
-     * In this case it sends an empty packet that notifies it that the client is still spectating.
+     * In this case it sends an empty packet that notifies that the client is still spectating.
      */
     void startClientResponseThread() {
         new Thread(() -> {

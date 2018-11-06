@@ -31,7 +31,7 @@ public class hostGameActionListener implements ActionListener {
     }
 
     /**
-     * @param e
+     * performs action of launching a host game
      */
     @Override
     public void actionPerformed(ActionEvent e) {

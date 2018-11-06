@@ -27,6 +27,9 @@ public class singleGameActionListener implements ActionListener {
         this.colorChooser = colorChooser;
     }
 
+    /**
+     * performs action of running a single game
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (System.getProperty ("os.name").contains ("Mac"))

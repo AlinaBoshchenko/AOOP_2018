@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class UpdateApp {
 
     /**
-     * Connect to the test.db database
+     * Connects to the test.db database
      *
      * @return the Connection object
      */
@@ -25,7 +25,7 @@ public class UpdateApp {
     }
 
     /**
-     * Update data of a scores table specified by the id
+     * Updates data of a scores table specified by the id
      *
      * @param id
      * @param nickname nickname of the player
@@ -58,8 +58,7 @@ public class UpdateApp {
     public static void main(String[] args) {
 
         UpdateApp app = new UpdateApp();
-        // update the warehouse with id 3
-        app.update(2, "Player4", 21);
+        app.update(10, "Player4", 22);
     }
 
 }

@@ -9,7 +9,7 @@ import java.sql.Statement;
 public class SelectApp {
 
     /**
-     * Connect to the test.db database
+     * Connects to the test.db database
      * @return the Connection object
      */
     private Connection connect() {
@@ -26,7 +26,7 @@ public class SelectApp {
 
 
     /**
-     * select all rows in the SCORES table and prints on the console
+     * selects all rows in the SCORES table and prints on the console
      */
     public void selectAll(){
         String sql = "SELECT id, nickname, score FROM scores ORDER BY score DESC LIMIT 5;";

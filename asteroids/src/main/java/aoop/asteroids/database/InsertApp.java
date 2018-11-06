@@ -22,18 +22,15 @@ public class InsertApp {
     }
 
     /**
-     * Insert a new row into the warehouses table
-     *
-     * @param nickname
-     * @param score
+     * Inserts a new row into the warehouses table
      */
-    public void insert(String nickname, double score) {
+    public void insert(String nickname, int score) {
         String sql = "INSERT INTO scores(nickname,score) VALUES(?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nickname);
-            pstmt.setDouble(2,score);
+            pstmt.setInt(2,score);
             System.out.println("Inserted");
             pstmt.executeUpdate();
         } catch (SQLException e) {

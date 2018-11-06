@@ -1,5 +1,6 @@
 package aoop.asteroids.model;
 
+import aoop.asteroids.database.MainDB;
 import aoop.asteroids.model.server.ConnectedClient;
 
 import java.awt.*;
@@ -12,7 +13,6 @@ public class MultiplayerGame extends Game {
     private final int MAX_COUNTDOWN_SECONDS = 4;
 
     private int countdownTicks;
-
 
     /**
      * The maximum number of total players.
@@ -34,15 +34,26 @@ public class MultiplayerGame extends Game {
      */
     private final static int MAX_RANDOM_ASTEROID_TRIES = 10;
 
-    public MultiplayerGame(int maxPlayerNumber) {
+
+    /**
+     * The status of using a data base or not.
+     */
+    private boolean useDataBase;
+
+    public MultiplayerGame(int maxPlayerNumber, boolean useDataBase) {
         super(null);
         connectedSpaceships = new ConcurrentHashMap<>(maxPlayerNumber);
         this.maxPlayerNumber = maxPlayerNumber;
         this.isGameStarted = false;
+        this.useDataBase = useDataBase;
     }
 
     public void addNewSpaceship(ConnectedClient client, String nickName, Color color) {
-        Spaceship newSpaceship = new Spaceship(nickName, color);
+        int score = 0;
+        if(useDataBase) {
+            score = MainDB.getPlayerScore(nickName);
+        }
+        Spaceship newSpaceship = new Spaceship(nickName, color, score);
         newSpaceship.destroy();
         connectedSpaceships.put(client, newSpaceship);
         updateGameStatus();
@@ -121,7 +132,12 @@ public class MultiplayerGame extends Game {
 
     }
 
-
+    private void increasePlayerScore(Spaceship player) {
+        player.increaseScore();
+        if(useDataBase) {
+            MainDB.updatePlayerScore(player.getNickName(), player.getScore());
+        }
+    }
 
     private void checkCollisions ()
     {
@@ -145,8 +161,7 @@ public class MultiplayerGame extends Game {
                 if (b.collides (s))
                 {
                     if(b instanceof MultiplayerBullet) {
-                        ((MultiplayerBullet) b).getShooter().increaseScore();
-                        System.out.println("SCORE: " + ((MultiplayerBullet) b).getShooter().getScore());
+                        increasePlayerScore(((MultiplayerBullet) b).getShooter());
                     }
                     b.destroy ();
                     s.destroy ();

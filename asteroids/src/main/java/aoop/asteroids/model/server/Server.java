@@ -76,7 +76,6 @@ public class Server implements Observer, Runnable {
     public void run() {
         running = false;
         openDatagramSocket();
-        System.out.println("SERVER OPENED");
         byte bytes[] = new byte[1024];
         DatagramPacket datagramPacket = new DatagramPacket(bytes, bytes.length);
         while(running) {

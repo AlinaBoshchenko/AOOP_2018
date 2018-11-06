@@ -1,5 +1,6 @@
 package aoop.asteroids.gui.actionListeners;
 
+import aoop.asteroids.database.MainDB;
 import aoop.asteroids.model.MultiplayerGame;
 import aoop.asteroids.model.client.ClientPlayer;
 import aoop.asteroids.model.server.MultiplayerServer;
@@ -36,7 +37,7 @@ public class hostGameActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         int playerNumber = Integer.parseInt(totalPlayersField.getText());
-        MultiplayerGame game = new MultiplayerGame (playerNumber);
+        MultiplayerGame game = new MultiplayerGame (playerNumber, MainDB.connnectDataBase());
         new Thread(game).start();
         MultiplayerServer server = new MultiplayerServer(game, Integer.parseInt(portField.getText()), Integer.parseInt(maxSpectatorsField.getText()), playerNumber);
         new Thread(server).start();

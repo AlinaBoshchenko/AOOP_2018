@@ -349,7 +349,6 @@ public class Game extends Observable implements Runnable, Serializable
 		}
 	}
 
-
 	protected void updateMessageDots() {
 		++nrDots;
 		nrDots %= 40;

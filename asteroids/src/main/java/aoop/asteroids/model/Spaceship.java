@@ -59,6 +59,13 @@ public class Spaceship extends GameObject
 	}
 
 	/**
+	 * Constructs a new spaceship with the specified nickName, color and score
+	 */
+	public Spaceship(String nickName, Color color, int score) {
+		this(new Point (400, 400), 0, 0, 15, 0, false, score, color, nickName);
+	}
+
+	/**
 	 *	Constructs a new spaceship using all specified information. Fields that 
 	 *	do not have a parameter are initialized to default values. This 
 	 *	constructor is primarily used for cloning a spaceship. All parameters 

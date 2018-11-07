@@ -32,6 +32,5 @@ public class ServerUpdatedGamePacket extends ServerGamePacket {
      */
     @Override
     public void handleServerPacket(Client client, InetAddress serverAddress, int serverPort) {
-        System.out.println(getClass().getName());
     }
 }

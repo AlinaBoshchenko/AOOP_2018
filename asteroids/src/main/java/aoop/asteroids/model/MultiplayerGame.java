@@ -165,7 +165,6 @@ public class MultiplayerGame extends Game {
     private void increasePlayerScore(Spaceship player) {
         player.increaseScore();
         if(useDataBase) {
-            System.out.println("UPDATED");
             MainDB.updatePlayerScore(player.getNickName(), player.getScore());
         }
     }

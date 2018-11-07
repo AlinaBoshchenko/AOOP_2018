@@ -49,7 +49,6 @@ public class Client extends Observable implements Runnable {
             datagramSocket.close();
             return false;
         }
-        System.out.println("Sent packet to " + inetAddress.getHostAddress());
         try {
             datagramSocket.setSoTimeout(CLIENT_TIMEOUT_TIME*1000);
         } catch (SocketException e) {
@@ -117,7 +116,7 @@ public class Client extends Observable implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Trying connection with " + serverAddress.getHostAddress() + ":" + serverPort);
+        logger.fine("Trying connection with " + serverAddress.getHostAddress() + ":" + serverPort);
         connected.set(establishConnection(serverAddress, serverPort));
         if(!connected.get()) {
             datagramSocket.close();

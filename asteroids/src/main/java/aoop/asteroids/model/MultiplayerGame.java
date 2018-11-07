@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * This class represents an extension of a game class, which supports the interaction of multiple players ships.
+ */
 public class MultiplayerGame extends Game {
 
     private final int MAX_COUNTDOWN_SECONDS = 4;
@@ -40,6 +43,11 @@ public class MultiplayerGame extends Game {
      */
     private boolean useDataBase;
 
+    /**
+     * Creates a new multi player game.
+     * @param maxPlayerNumber the maximum nr of players that can join the game.
+     * @param useDataBase should be true if the game uses a data base to store the scores in, false otherwise.
+     */
     public MultiplayerGame(int maxPlayerNumber, boolean useDataBase) {
         super(null);
         connectedSpaceships = new ConcurrentHashMap<>(maxPlayerNumber);
@@ -48,6 +56,12 @@ public class MultiplayerGame extends Game {
         this.useDataBase = useDataBase;
     }
 
+    /**
+     * Adds a new spaceship to the game.
+     * @param client the client that controls the spaceship.
+     * @param nickName the nickName of the player.
+     * @param color the color of the player's spaceship.
+     */
     public void addNewSpaceship(ConnectedClient client, String nickName, Color color) {
         int score = 0;
         if(useDataBase) {
@@ -59,6 +73,11 @@ public class MultiplayerGame extends Game {
         updateGameStatus();
     }
 
+    /**
+     * Updates the state of the ship controlled by the specified player in this game.
+     * @param player the client whose ship should be updated.
+     * @param abstractShip an abstract ship containing the state the player's ship should change to.
+     */
     public void updateShipCoordinates(ConnectedClient player, Spaceship abstractShip) {
         if(connectedSpaceships.get(player) == null) {
             return;
@@ -72,6 +91,10 @@ public class MultiplayerGame extends Game {
         }
     }
 
+    /**
+     * Retrieves the hash map of all connected clients and their corresponding spaceships.
+     * @return
+     */
     public ConcurrentHashMap<ConnectedClient, Spaceship> getConnectedSpaceships() {
         return connectedSpaceships;
     }
@@ -105,6 +128,9 @@ public class MultiplayerGame extends Game {
         this.notifyObservers ();
     }
 
+    /**
+     * Updates the game status. Checks whenever the game should be started/ended or restarted.
+     */
     private void updateGameStatus() {
         if(isGameStarted) {
             int cnt = 0;
@@ -132,13 +158,21 @@ public class MultiplayerGame extends Game {
 
     }
 
+    /**
+     * Increases a player's score.
+     * @param player the player whose score should be increased.
+     */
     private void increasePlayerScore(Spaceship player) {
         player.increaseScore();
         if(useDataBase) {
+            System.out.println("UPDATED");
             MainDB.updatePlayerScore(player.getNickName(), player.getScore());
         }
     }
 
+    /**
+     * Checks the collisions between game objects.
+     */
     private void checkCollisions ()
     {
         bulletLoop:
@@ -188,6 +222,9 @@ public class MultiplayerGame extends Game {
         }
     }
 
+    /**
+     * Remove the destroyed objects.
+     */
     private void removeDestroyedObjects ()
     {
         Collection<Asteroid> newAsts = new ArrayList<>();
@@ -212,6 +249,9 @@ public class MultiplayerGame extends Game {
         updateGameStatus();
     }
 
+    /**
+     * Adds a random asteroid in the game. The asteroid is guaranteed to spawn at a reasonable distance from any player playing the game.
+     */
     private void addRandomAsteroid ()
     {
         int prob = Game.rng.nextInt (3000);

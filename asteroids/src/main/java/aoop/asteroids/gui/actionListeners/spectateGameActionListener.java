@@ -1,15 +1,15 @@
 package aoop.asteroids.gui.actionListeners;
 
-import aoop.asteroids.gui.AsteroidsFrame;
-import aoop.asteroids.model.client.Client;
 
+import aoop.asteroids.model.client.Client;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
 /**
- * class responsible for spectating a game action listener
+ * Class that describes the actions application should perform when a player attempts to spectate a game from the main menu of the game.
  */
 public class spectateGameActionListener implements ActionListener {
 

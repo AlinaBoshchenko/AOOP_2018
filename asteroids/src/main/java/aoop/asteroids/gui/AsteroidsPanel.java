@@ -5,10 +5,6 @@ import aoop.asteroids.model.client.Client;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.lang.Object;
-import java.util.Comparator;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.PriorityQueue;
 import javax.swing.JPanel;
 
@@ -42,7 +38,7 @@ public class AsteroidsPanel extends JPanel
 	 *
 	 *	@param game game model.
 	 */
-	public AsteroidsPanel (Game game)
+	AsteroidsPanel(Game game)
 	{
 		this.game = game;
 		this.game.addObserver ((o, arg) -> AsteroidsPanel.this.repaint ());
@@ -54,7 +50,7 @@ public class AsteroidsPanel extends JPanel
 	 *
 	 *	@param client game model.
 	 */
-	public AsteroidsPanel (Game game, Client client)
+	AsteroidsPanel(Game game, Client client)
 	{
 		this.game = game;
 		client.addObserver((o, arg) -> {
@@ -158,6 +154,11 @@ public class AsteroidsPanel extends JPanel
 		}
 	}
 
+	/**
+	 * Draws the representations of spaceships for a multi player game.
+	 * @param game - the multiplayer game.
+	 * @param g - graphics instance to use.
+	 */
 	private void paintSpaceships(MultiplayerGame game, Graphics2D g) {
 		for(Spaceship s : game.getConnectedSpaceships().values()) {
 			if(s.isDestroyed()) {

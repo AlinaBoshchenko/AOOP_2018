@@ -7,13 +7,13 @@ import java.net.InetAddress;
 import java.util.logging.Logger;
 
 /**
- * abstract class representing a game packet which is used for providing a game to Spectators and Joiners
+ * Abstract class representing a game packet which is used as as the pivot of the UDP communication between server and client, and vice-versa.
  */
 abstract public class GamePacket implements Serializable {
     transient private final static Logger logger = Logger.getLogger(GamePacket.class.getName());
 
     /**
-     * sends packet
+     * Sends this packet from the indicated DatagramSocket to the specified address and port.
      */
     public boolean sendPacket(DatagramSocket from, InetAddress inetAddress, int port) {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -39,6 +39,9 @@ abstract public class GamePacket implements Serializable {
         return true;
     }
 
+    /**
+     * Returns the logger for any packet.
+     */
     public static Logger getLogger() {
         return logger;
     }

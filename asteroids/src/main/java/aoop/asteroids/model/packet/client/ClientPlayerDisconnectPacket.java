@@ -8,6 +8,9 @@ import aoop.asteroids.model.server.Server;
 import java.net.InetAddress;
 import java.util.Set;
 
+/**
+ * This class represents a packet a player client would send to a server when disconnecting.
+ */
 public class ClientPlayerDisconnectPacket extends ClientGamePacket {
     /**
      * This method describes the actions the specified server that received this packet should do.

@@ -134,19 +134,16 @@ public class AsteroidsFrame extends JFrame
 	/** Initializes the quit- and new game action. */
 	private void initActions() 
 	{
-		// Quits the application
 		this.quitAction = new AbstractAction ("Quit") 
 		{
 			public static final long serialVersionUID = 2L;
-
 			@Override
 			public void actionPerformed (ActionEvent arg0) 
 			{
 				System.exit(0);
 			}
 		};
-		
-		// Creates a new model
+
 		this.newGameAction = new AbstractAction ("New Game") 
 		{
 			public static final long serialVersionUID = 3L;

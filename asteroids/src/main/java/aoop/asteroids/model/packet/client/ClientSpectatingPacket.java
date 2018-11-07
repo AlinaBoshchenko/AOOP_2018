@@ -5,6 +5,9 @@ import aoop.asteroids.model.server.Server;
 import java.net.InetAddress;
 import java.util.Set;
 
+/**
+ * This class represents an empty packet a spectator client would send to a server in order to notify it that it continues spectating and didn't time out.
+ */
 public class ClientSpectatingPacket extends ClientGamePacket {
 
     /**

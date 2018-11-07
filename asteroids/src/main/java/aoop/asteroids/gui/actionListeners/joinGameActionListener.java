@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 /**
- * class responsible for joining game action listener
+ * Class that describes the actions application should perform when a player attempts to join a game from the menu.
  */
 public class joinGameActionListener implements ActionListener {
 
@@ -23,9 +23,7 @@ public class joinGameActionListener implements ActionListener {
         this.nickNameField = nickNameField;
         this.colorChooser = colorChooser;
     }
-/**
- * performs action of joining game
- */
+
     @Override
     public void actionPerformed(ActionEvent e) {
         try {

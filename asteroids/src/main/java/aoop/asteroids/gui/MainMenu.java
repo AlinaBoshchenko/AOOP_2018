@@ -6,15 +6,12 @@ import aoop.asteroids.gui.actionListeners.singleGameActionListener;
 import aoop.asteroids.gui.actionListeners.spectateGameActionListener;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
  * Class responsible for creation of the main menu window
  */
 public class MainMenu extends JFrame {
-    final String FRAME_NAME = "Asteroids Game";
     private static JTextField nickNameField;
     private static JButton joinButton;
     private static JButton singleGameButton;
@@ -27,9 +24,10 @@ public class MainMenu extends JFrame {
     private static JButton spectateButton;
     private static JColorChooser colorChooser;
 
-    MainMenu() {
+    public MainMenu() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
+        String FRAME_NAME = "Asteroids Game";
         this.setTitle(FRAME_NAME);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(d.width/3, d.height*3/5));
@@ -59,7 +57,7 @@ public class MainMenu extends JFrame {
         createMaxClientsPanel(pane, screenDimension);
         createOptionsPanel(pane, screenDimension);
         createHostPanel(pane, screenDimension);
-        createColorChooser(pane, screenDimension);
+        createColorChooser(pane);
     }
 
     /**
@@ -74,7 +72,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * graphical interpretation of the menu
+     * Graphical preview of the color of the ship
      */
     private static class PreviewPanel extends JPanel{
         private Color color;
@@ -115,15 +113,15 @@ public class MainMenu extends JFrame {
             g2.fill(p);
         }
 
-        public void setColor(Color color) {
+        void setColor(Color color) {
             this.color = color;
         }
     }
 
     /**
-     * creates a panel for the color chose
+     * Creates a panel for the color chose
      */
-    private static void createColorChooser(Container pane, Dimension screenDimension) {
+    private static void createColorChooser(Container pane) {
         colorChooser = new JColorChooser();
         PreviewPanel previewPanel = new PreviewPanel(colorChooser.getColor());
         colorChooser.getSelectionModel().addChangeListener(e -> {
@@ -137,7 +135,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * creates a host panel
+     * Creates a host panel
      */
     private static void createHostPanel(Container pane, Dimension screenDimension) {
         JPanel hostPanel = new JPanel(new FlowLayout());
@@ -153,7 +151,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * creates optional panel
+     * Creates optional panel
      */
     private static void createOptionsPanel(Container pane, Dimension screenDimension) {
         JPanel optionsButtonsPanel = new JPanel(new FlowLayout());
@@ -168,7 +166,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * creates single game panel
+     * Creates single game panel
      */
     private static void createSingleGamePanel(Container pane, Dimension screenDimension) {
         JPanel singleGamePanel = new JPanel(new FlowLayout());
@@ -181,7 +179,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * creates max players panel
+     * Creates max players panel
      */
     private static void createMaxClientsPanel(Container pane, Dimension screenDimension) {
         JPanel maxClientsPanel = new JPanel(new FlowLayout());
@@ -198,7 +196,7 @@ public class MainMenu extends JFrame {
     }
 
     /**
-     * creates nickname input panel
+     * Creates nickname input panel
      */
     private static void createNickNamePanel(Container pane, Dimension screenDimension) {
         JPanel nickNamePanel = new JPanel(new FlowLayout());
@@ -208,11 +206,5 @@ public class MainMenu extends JFrame {
         nickNamePanel.add(nickNameField);
         nickNamePanel.setMaximumSize(new Dimension(screenDimension.width/2, screenDimension.height/20));
         addRow(nickNamePanel, pane);
-    }
-
-
-    public static void main (String [] args)
-    {
-        JFrame mmFrame = new MainMenu();
     }
 }

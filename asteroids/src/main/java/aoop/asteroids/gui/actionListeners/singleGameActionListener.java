@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 /**
- * class responsible for single game action listener
+ * Class that describes the actions application should perform when a player attempts to start a single game from the main menu.
  */
 public class singleGameActionListener implements ActionListener {
     private JTextField nickNameField;

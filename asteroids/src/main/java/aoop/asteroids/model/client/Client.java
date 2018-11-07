@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 /**
- * class responsible for the representation of the Client (Player)
+ * Class responsible for the representation of a spectator
  */
 public class Client extends Observable implements Runnable {
     private final static int CLIENT_TIMEOUT_TIME = 5;
@@ -35,7 +35,7 @@ public class Client extends Observable implements Runnable {
     }
 
     /**
-     * establishes connection
+     * Establishes connection with the server with the specified address and port
      */
     private boolean establishConnection(InetAddress inetAddress, int port) {
         try {

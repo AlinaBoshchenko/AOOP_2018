@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * class responsible for hosting a game action listener
+ * Class that describes the actions application should perform when a player attempts to host a game from the main menu of the game.
  */
 public class hostGameActionListener implements ActionListener {
     private JTextField nickNameField;
@@ -32,7 +32,7 @@ public class hostGameActionListener implements ActionListener {
     }
 
     /**
-     * performs action of launching a host game
+     * Performs action of launching a host game
      */
     @Override
     public void actionPerformed(ActionEvent e) {

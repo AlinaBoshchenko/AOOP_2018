@@ -1,7 +1,7 @@
 package aoop.asteroids.database;
 
-
 import java.sql.*;
+import java.util.logging.Logger;
 
 public class MainDB {
     /**
@@ -15,6 +15,10 @@ public class MainDB {
     private static String url = "jdbc:sqlite:" + "asteroids" + separator +
             "src" + separator + "main" + separator + "db" + separator + "scores.db";
 
+    /**
+     * The logger of this class.
+     */
+    private static Logger logger = Logger.getLogger(MainDB.class.getName());
 
     /**
      * Checks if there exists a score database within the default directory
@@ -32,9 +36,9 @@ public class MainDB {
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sqlQuerry);
-            System.out.println("Table created");
+            logger.fine("Table missing. Successfully created new.");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.severe("Could not connect to an existing database or create a new one. Reason: " + e.getMessage());
             return false;
         }
         return true;
@@ -46,16 +50,20 @@ public class MainDB {
      */
 
     private static Connection connect() {
-        // SQLite connection string
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.severe("Could not establish connection with the data base. Reason: " + e.getMessage());
         }
         return conn;
     }
 
+    /**
+     * Gets the score of a player stored in the database. If there is no field in the data base. Create a new one with the score 0, and return 0.
+     * @param nickName - the nickname of the player.
+     * @return - the score of the player in the data base if any, otherwise 0.
+     */
     public static int getPlayerScore(String nickName) {
         String sql = "SELECT score FROM scores WHERE nickname = '" + nickName + "'";
 
@@ -66,33 +74,41 @@ public class MainDB {
             if(rs.next()) {
                 return rs.getInt("score");
             } else {
-                insert(nickName, 0);
+                insert(nickName);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.severe("Could not retrieve player score from the data base. Reason: " + e.getMessage());
         }
         return 0;
     }
 
-    public static void insert(String nickname, int score) {
+    /**
+     * Inserts a new field with score 0 in the database
+     */
+    private static void insert(String nickname) {
         String sql = "INSERT INTO scores(nickname,score) VALUES(?,?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, nickname);
-            pstmt.setInt(2,score);
+            pstmt.setInt(2, 0);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.severe("Could not insert a new field in the database. Reason: " + e.getMessage());
         }
     }
 
+    /**
+     * Updates a player score in the data base.
+     * @param nickname - the nickname of the player
+     * @param score - the new score
+     */
     public static void updatePlayerScore(String nickname, int score) {
         String query = "UPDATE scores SET score = " + score + " WHERE nickname = '" + nickname + "'";
         try (Connection conn = connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.severe("Could not update a player score in the database. Reason: " + e.getMessage());
         }
     }
 

@@ -25,7 +25,7 @@ public class Asteroid extends GameObject
      *	@param velocityY the velocity in Y direction.
      *	@param radius radius of the asteroid.
      */
-	public Asteroid (Point location, double velocityX, double velocityY, int radius)
+	Asteroid(Point location, double velocityX, double velocityY, int radius)
 	{
 		super (location, velocityX, velocityY, radius);
 	}

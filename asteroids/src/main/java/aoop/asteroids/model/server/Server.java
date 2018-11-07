@@ -1,16 +1,17 @@
 package aoop.asteroids.model.server;
 
 import aoop.asteroids.model.Game;
-import aoop.asteroids.model.client.Client;
 import aoop.asteroids.model.packet.client.ClientGamePacket;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * This class represents a game on a spectatable server, which can be only spectated..
+ */
 public class Server implements Observer, Runnable {
 
     /**
@@ -46,7 +47,7 @@ public class Server implements Observer, Runnable {
     /**
      * The logger of this class
      */
-    private final static Logger logger = Logger.getLogger(Client.class.getName());
+    private final static Logger logger = Logger.getLogger(Server.class.getName());
 
 
     /**
@@ -62,6 +63,9 @@ public class Server implements Observer, Runnable {
         connectedSpectators = Collections.synchronizedSet(new LinkedHashSet<>(maxSpectators));
     }
 
+    /**
+     * Attempts to open a UDP socket which will be used as the gateway of communication with the connected clients.
+     */
     private void openDatagramSocket() {
         try {
             datagramSocket = new DatagramSocket(port);
@@ -96,26 +100,49 @@ public class Server implements Observer, Runnable {
         }
     }
 
+    /**
+     * Returns the set of all connected spectators.
+     * @return set of all connected spectators.
+     */
     public Set<ConnectedClient> getConnectedSpectators() {
         return connectedSpectators;
     }
 
+    /**
+     * Returns the maximum number of spectators that are able to spectate this game.
+     * @return the max nr of spectators.
+     */
     public int getMaxSpectators() {
         return maxSpectators;
     }
 
+    /**
+     * Returns the logger of a server.
+     * @return logger.
+     */
     public static Logger getLogger() {
         return logger;
     }
 
+    /**
+     * Retrieves the socket used by this server.
+     * @return the socket.
+     */
     public DatagramSocket getDatagramSocket() {
         return datagramSocket;
     }
 
+    /**
+     * Retrieves the up-to-date game model of the server.
+     * @return game model.
+     */
     public Game getGame() {
         return game;
     }
 
+    /**
+     * Updates the model of all connected spectators.
+     */
     void updateSpectators() {
         synchronized (connectedSpectators) {
             Iterator<ConnectedClient> iterator = connectedSpectators.iterator();

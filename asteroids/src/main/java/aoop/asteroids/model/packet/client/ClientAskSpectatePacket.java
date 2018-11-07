@@ -7,6 +7,9 @@ import aoop.asteroids.model.server.Server;
 import java.net.InetAddress;
 import java.util.Set;
 
+/**
+ * This class represents a packet a client would send to a server when attempting to join it as a spectator.
+ */
 public class ClientAskSpectatePacket extends ClientGamePacket {
 
     /**

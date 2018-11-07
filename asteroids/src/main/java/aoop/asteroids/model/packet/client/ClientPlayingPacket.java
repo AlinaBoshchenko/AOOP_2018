@@ -9,6 +9,9 @@ import aoop.asteroids.model.server.Server;
 import java.net.InetAddress;
 import java.util.Set;
 
+/**
+ * This class represents a packet a player client would sent to a server in order to update it's state.
+ */
 public class ClientPlayingPacket extends ClientGamePacket {
     /**
      * The abstract object ship that contains the needed information about the ship of the client

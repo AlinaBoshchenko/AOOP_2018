@@ -47,24 +47,24 @@ public class Game extends Observable implements Runnable, Serializable
 	private Spaceship ship;
 
 	/** List of bullets. */
-	protected Collection <Bullet> bullets;
+	Collection <Bullet> bullets;
 
 	/** List of asteroids. */
 	protected Collection <Asteroid> asteroids;
 
 	/** Random number generator. */
-	transient protected static Random rng;
+	transient static Random rng;
 
 	/** Game tick counter for spawning random asteroids. */
-	transient protected int cycleCounter;
+	transient int cycleCounter;
 
 	/** Asteroid limit. */
-	transient protected int asteroidsLimit;
+	transient int asteroidsLimit;
 
 	/**
 	 * The game message to display
 	 */
-	protected String gameMessage = null;
+	String gameMessage = null;
 
 	/**
 	 * The number of dots after the message.
@@ -73,12 +73,12 @@ public class Game extends Observable implements Runnable, Serializable
 	/**
 	 * The time between each game tick.
 	 */
-	protected static final int gameTickTime = 40;
+	static final int gameTickTime = 40;
 
 	/**
 	 * The number of game ticks passed since the beginning of the game
 	 */
-	protected long gameTickCount = 0L;
+	long gameTickCount = 0L;
 
 	/**
 	 *	Indicates whether the a new game is about to be started. 
@@ -286,7 +286,7 @@ public class Game extends Observable implements Runnable, Serializable
 	 *
 	 *	@return true if game is over, false otherwise.
 	 */
-	protected boolean isGameOver()
+	private boolean isGameOver()
 	{
 		return this.ship.isDestroyed ();
 	}
@@ -349,7 +349,7 @@ public class Game extends Observable implements Runnable, Serializable
 		}
 	}
 
-	protected void updateMessageDots() {
+	void updateMessageDots() {
 		++nrDots;
 		nrDots %= 40;
 		setChanged();
@@ -366,7 +366,7 @@ public class Game extends Observable implements Runnable, Serializable
 	/**
 	 * @return The number of game ticks since the start of the game
 	 */
-	public long getGameTickCount() {
+	private long getGameTickCount() {
 		return gameTickCount;
 	}
 

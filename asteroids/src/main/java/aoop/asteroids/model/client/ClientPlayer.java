@@ -6,15 +6,13 @@ import aoop.asteroids.model.Game;
 import aoop.asteroids.model.Spaceship;
 import aoop.asteroids.model.packet.client.*;
 import aoop.asteroids.model.packet.server.ServerUpdatedGamePacket;
-
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.net.InetAddress;
 
 /**
- * class holds information about CLient and represents it
+ * Class responsible for the representation of a player.
  */
 public class ClientPlayer extends Client{
 

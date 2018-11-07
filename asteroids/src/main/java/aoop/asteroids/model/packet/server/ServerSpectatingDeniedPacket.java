@@ -6,6 +6,9 @@ import aoop.asteroids.model.packet.GamePacket;
 import javax.swing.*;
 import java.net.InetAddress;
 
+/**
+ * This class represents a packet a server would send to a client when denying it's request to join as a spectator.
+ */
 public class ServerSpectatingDeniedPacket extends ServerGamePacket {
     private String reason;
 

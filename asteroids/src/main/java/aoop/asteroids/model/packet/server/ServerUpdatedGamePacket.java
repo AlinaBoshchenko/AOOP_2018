@@ -5,8 +5,16 @@ import aoop.asteroids.model.client.Client;
 
 import java.net.InetAddress;
 
+/**
+ * This class represents a packet a server would send to all it's clients (both spectator and players) to notify them about the most current
+ * model of the game, which they can subsequently reproduce in their views.
+ */
 public class ServerUpdatedGamePacket extends ServerGamePacket {
+    /**
+     * The new game model which is sent with this packet.
+     */
     private Game newGame;
+
     public  ServerUpdatedGamePacket(Game newGame) {
         this.newGame = newGame;
     }

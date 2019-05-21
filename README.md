@@ -1,22 +1,17 @@
-# 2018_Assignments
+# 2018 Final assignment for the Advanced Object Oriented Programming course
+## Deneral description
+For this project the goal was to extend working 2D Asteroids game. The task included implementing stable multiplayer functionality on the basis of UDP for the game to end when only one player is left alive. Moreover, it suggested adding a main menu in order to organize the states of the game better, a remote table showing the highest scores, and distinguishing players using nicknames and colors.  
+  
+  
+#### Game contains the following modes:  
+* single player 
+* join a game
+* spectate a game
+* host a game  
+  
 
-In this repository we will put the assignments and helpful additional files that you need for the assignment.
+Single player mode of the game runs normally with the score increased every time tick. When selecting to spectate the game a user should add IP address and the port of the game that he wants to spectate if it exists. Then an instance of the game being played should be ruined on the Spectator without him altering the state of the model.   
+Hosting a game or joining a game also require IP address and a port. When an online game ends the winner should be notified about his win, other players return back to the Main Menu. If a player has won then his name is included in a database and his name is placed on the leaderboard.    
 
-**Note about assignment 2: There is a README file in the folder. Take a look at it before you begin working!**
-
-
-## Submitting assignments
-
-Every group is given a repository, but no access to the master branch. Instead, you work on the development branch, and make pull requests to submit your assignments. When you do, your program will be sent to a continuous integration provider: [CirleCI](https://circleci.com/). CircleCI will run your tests, and only report success if all tests succeed. CircleCI is configured to build the currently assigned project by running `mvn integration-test`. If your project does not compile and pass all JUnit tests, then it will automatically be prevented from merging into the master branch. Any project which does not pass CircleCi will not be graded!
-
- **Don't touch .circleci/config.yml**.
-
-To get started, clone the repository you've been given. (on the page of your own repository there should be a _clone or download_-button, which will provide you with the exact url). To use SSH, follow [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/). Check out the development branch (`git checkout development`).
-
-In the new repo, do `git remote add assignments https://github.com/rug-advoop/2018_Assignments.git` (only once) to allow downloading assignments, then `git pull assignments master` to get the latest version of the assignments. When the repository updates, repeat the latter (expect a Nestor announcement). If git refuses, `git pull --allow-unrelated-histories assignments master` might work. Make an issue in the repository otherwise.
-
-## Code Coverage
-
-For this year, we're providing POM files that compute code coverage: The degree to which your code is tested. This is done by the [JaCoCo Maven Plugin](http://www.jacoco.org/). The plugin will generate reports on build, and place them in ${PROJECT_ROOT}/target/site/jacoco. A human readable format is produced by opening index.html in that folder with a web browser. NOTE: JaCoCo is configured to work on `mvn test` or later targets.
-
-In the CI config there is a bash line that checks if the coverage is at least 100%. Use the following ```if test ` cat target/site/jacoco/index.html | grep -o "[[:digit:]]\{1,3\}%" | head -1 | grep -o "[[:digit:]]\{1,3\}" ` -ge 100 ; then echo "exit code 0 (pass)" ; else echo "exit code 1 (fail)" ; fi ;``` to check if your code will pass that particular test.
+## Technology: 
+Java, MySQL
